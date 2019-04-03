@@ -79,6 +79,6 @@ theme: ad
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  repo: https://github.com/Hewaller/blog.git
+  repo: https://github.com/Hewaller/Hewaller.github.io
   type: git
   branch: master
