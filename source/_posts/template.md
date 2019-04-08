@@ -1,11 +1,11 @@
 ---
 title: 'template'
-date: 2019-04-03
-categories: CRM # 分类只能有1个
+date: 201x-xx-xx
+categories: 分类 # 分类只能有1个
 tags: # 标签可以有多个
-  - 400
-  - CRM
-  - promise
+  - 标签1
+  - 标签2
+  - 标签3
 # cover: "https://text.com/demo.png" # 文章封面图片URL
 ---
 
