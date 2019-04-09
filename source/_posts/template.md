@@ -1,7 +1,7 @@
 ---
 title: 'template'
 date: 201x-xx-xx
-categories: 分类 # 分类只能有1个
+categories: template # 分类只能有1个
 tags: # 标签可以有多个
   - 标签1
   - 标签2
