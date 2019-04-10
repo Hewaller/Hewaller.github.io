@@ -2,8 +2,8 @@
 layout: post
 title: wx.getStorageSync And wx.setStorageSync
 date: 2018-11-29
-categories: blog
-tags: [JavaScript, 前端, 小程序]
+categories: weChat
+tags: [weChat, 前端, 小程序]
 description: 小程序存储信息
 ---
 

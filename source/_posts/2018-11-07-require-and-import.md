@@ -2,7 +2,7 @@
 layout: post
 title: require和import
 date: 2018-11-07
-categories: blog
+categories: ES6
 tags: [JavaScript, 前端, ES6]
 description: require和import的比较
 ---

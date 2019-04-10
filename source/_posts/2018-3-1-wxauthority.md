@@ -1,10 +1,10 @@
 ---
 layout: post
-title: 常见的css布局
+title: wx存储用户信息
 date: 2019-01-02
-categories: blog
-tags: [css, 前端, 布局]
-description: 列表项布局
+categories: weChat
+tags: [weChat, localStorage, user]
+description: 微信存储信息至本地
 ---
 
 ## 用户权限
@@ -32,7 +32,7 @@ export default {
     // 设置储存时间，用来判断是否过期
     const oldUser = this.get() || {}
     const newUser = { ...oldUser, ...user } //将以前的数据和新的数据一起整合在一起
-    console.log(newUser, 'newuser')
+    console.log(newUser)
     wx.setStorageSync(key, newUser) //微信存储数据的静态方法
     return newUser
   },

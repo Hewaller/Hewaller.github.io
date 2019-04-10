@@ -2,8 +2,8 @@
 layout: post
 title: cropperJS -- nuxt服务端渲染
 date: 2018-11-02
-categories: blog
-tags: [nuxt]
+categories: nuxt
+tags: [nuxt, JavaScript, SEO]
 description: 图片自定义裁剪和上传
 ---
 

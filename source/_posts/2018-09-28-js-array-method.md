@@ -2,7 +2,7 @@
 layout: post
 title: JavaScript - 常用数组操作方法
 date: 2018-09-28
-categories: blog
+categories: JavaScript
 tags: [JavaScript, 前端]
 description: JavaScript常用数组操作方法，包含ES6方法
 ---

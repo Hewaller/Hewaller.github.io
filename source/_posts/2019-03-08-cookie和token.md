@@ -2,8 +2,8 @@
 layout: post
 title: cookie 和 token
 date: 2019-03-07
-categories: blog
-tags: ['cookie', 'token']
+categories: 前端
+tags: [cookie, token, 前端]
 description: cookie 和 token
 ---
 
