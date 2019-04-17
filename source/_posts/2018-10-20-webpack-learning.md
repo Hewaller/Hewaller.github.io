@@ -3,7 +3,7 @@ layout: post
 title: webpack前进之路
 date: 2018-11-06
 categories: webpack
-tags: [Webpack, JavaScript, 前端]
+tags: [webpack, JavaScript, 前端]
 description: webpack学习笔记
 ---
 
