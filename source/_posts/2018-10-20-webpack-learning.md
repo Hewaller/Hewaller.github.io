@@ -3,11 +3,20 @@ layout: post
 title: webpack前进之路
 date: 2018-11-06
 categories: webpack
-tags: [webpack, JavaScript, 前端]
-description: webpack学习笔记
+tags:
+  - webpack
+  - Javascript
+  -
 ---
 
-# webpack 学习笔记
+webpack 学习笔记
+最后更改日期：2019 年 02 月 23 日
+
+<!-- more -->
+
+`webpack` 学习笔记，参考了官网和很多的文章，由于当时没有及时记录，参考的文章就不一一列出了
+
+# webpack 学习之路
 
 ## css
 
@@ -421,5 +430,3 @@ webpack 配置：
   }
 }
 ```
-
-最后更改日期：2019 年 02 月 23 日

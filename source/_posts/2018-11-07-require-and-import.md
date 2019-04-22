@@ -3,13 +3,54 @@ layout: post
 title: require和import
 date: 2018-11-07
 categories: ES6
-tags: [JavaScript, 前端, ES6]
-description: require和import的比较
+tags:
+  - JavaScript
+  - 前端
+  - ES6
 ---
 
-# ES6：module（模块化）
+`require` 和 `import`
+2018 年 11 月 07 日
 
-使用方法： export 指令导出，module 指令引入模块，并没有直接使用 commonJS
+<!-- more  -->
+
+# 模块化
+
+> 定义： 模块是自动运行在严格模式下并且没有那么办法退出的 `JavaScript` 代码。 与共享一切框架相反的是，在模块顶部创建的变量不会自动添加到全局共享作用域，而且模块必须导出一些外部代码可以访问的元素（变量或者函数）
+
+- 模块中 `this` 的值是 `undefined`
+- 可以支持导入和导出
+- 不支持 `HTML` 格式的注释
+
+## 先谈导出
+
+关键字 `export`
+
+> 可以通过 `export` 将任何变量、函数或类导出
+
+```js
+let template = ''
+//  导出变量
+export template
+//  导出函数
+export function name() {}
+// 到处类
+export class Test{
+  constructor(...) {
+    ...
+  }
+}
+----------------------
+function test() {
+  ...
+}
+export test
+
+```
+
+模块的默认值（在学习 node 中了解的）
+
+**_ 通过 `default` 关键字导出 _**
 
 ```js
 // template.js 导出方法或变量
@@ -80,5 +121,3 @@ define(function(require, exports, module) {
 ```js
 requier('./test.js')()
 ```
-
-2018 年 11 月 07 日

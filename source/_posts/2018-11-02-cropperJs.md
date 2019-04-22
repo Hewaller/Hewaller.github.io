@@ -3,9 +3,16 @@ layout: post
 title: cropperJS -- nuxt服务端渲染
 date: 2018-11-02
 categories: nuxt
-tags: [nuxt, JavaScript, SEO]
-description: 图片自定义裁剪和上传
+tags:
+  - 文件上传
+  - nuxt
+  - 服务端渲染
 ---
+
+服务端渲染实现图片自定义裁剪和上传和一些图片上传的知识点
+最后更新日期 2018 年 11 月 02 日
+
+<!-- more -->
 
 # 裁剪组件的选择
 
@@ -19,7 +26,7 @@ description: 图片自定义裁剪和上传
 2.  在服务端渲染时找不到 window，所有的 DOM 操作都应当被避免
 3.  使用的组件要注意它是否是在 created 的生命周期被加载或者说被挂载的，只有他在 mounted 时被加载才能被用在服务端渲染
 
-### 实在需要使用 DOM 操作的方法
+### 必须需要使用 DOM 操作的方法
 
 ```js
 mounted() {
@@ -42,7 +49,7 @@ methods: {
 }
 ```
 
-#### 点击图片上传（本地图片上传，被劫持转化为 base64）
+### 点击图片上传（本地图片上传，被劫持转化为 base64）
 
 遇到的问题： 上传的图片没有改变初始化加载的图片
 
@@ -64,7 +71,9 @@ async upload() {
       },
 ```
 
-#### 渲染画布，实现拖拽和缩放
+### 渲染画布，实现拖拽和缩放
+
+使用 cropperJS 插件完成业务需求， 实现的原理是通过 `canvas` 来渲染画布和截取,具体的配置可以参考 [cropperjs]() `demo` 和注释如下：
 
 ```js
 initCropper() {
@@ -114,7 +123,9 @@ initCropper() {
       },
 ```
 
-#### base64 转化为 bolb 类型
+### base64 转化为 bolb 类型
+
+> 改变文件类型，返回一个二进制的对象
 
 ```js
 dataURItoBlob(base64Data) {
@@ -135,9 +146,10 @@ dataURItoBlob(base64Data) {
       },
 ```
 
-#### 保存裁剪的图片并且上传
+### 保存裁剪的图片并且上传
 
-问题： 首次拿取数据后如果不移动裁剪框是不能获取到裁剪内数据的，从服务端加载的数据是没法获取到文件名的，可以使用时间戳命名进行上传
+- 遇到的问题： 首次获取到数据后如果不移动裁剪框是不能获取到裁剪内数据的，从服务端加载的数据是没法获取到文件名的，
+- 解决的思路： 可以使用时间戳命名进行上传
 
 ```js
 async save() {
@@ -169,35 +181,42 @@ async save() {
       },
 ```
 
-#### 从 token 中拿取上传的签名和使用 MD5 加密防止重名文件上传被覆盖
+### 从 `token` 中获取上传的签名和使用 `MD5` 加密防止重名文件上传被覆盖
+
+Q： 如果直接使用文件名作为上传的文件名称， 在不同目录下的同名文件上传到服务器之后，由于上传的名称相同会导致以前的文件被覆盖，问题难以被发现
+
+A:
+
+- 文件名加上当前事件戳（毫秒级），但不够优雅
+- 使用 `MD5` 加密， 解决命名重复问题
 
 ```js
 async beforeUpload() {
-        const token = await this.$store.dispatch('getToken/getAliToken')
-        const { accessid, callback, dir, host, policy, signature } = token
-        this.action = host
-        this.formData['key'] = this.name ? `${dir}${this.name}` : (Date.now() + this.url.substr(this.url.lastIndexOf('.')).split('-')[0])
-        // (Date.now() + this.url.substr(this.url.lastIndexOf('.')).split('-')[0])服务端拿取的图片命名规则
-        // this.formData['key'] = `${dir}${md5(file.name)}${file.name.substr(file.name.indexOf('.'))}`
-        this.formData['OSSAccessKeyId'] = accessid
-        this.formData['policy'] = policy
-        this.formData['Signature'] = signature
-        this.formData['callback'] = callback
-        return true
-      },
+  const token = await this.$store.dispatch('getToken/getAliToken')
+  const { accessid, callback, dir, host, policy, signature } = token
+  this.action = host
+  this.formData['key'] = this.name ? `${dir}${this.name}` : (Date.now() + this.url.substr(this.url.lastIndexOf('.')).split('-')[0])
+  // (Date.now() + this.url.substr(this.url.lastIndexOf('.')).split('-')[0])服务端拿取的图片命名规则
+  // this.formData['key'] = `${dir}${md5(file.name)}${file.name.substr(file.name.indexOf('.'))}`
+  this.formData['OSSAccessKeyId'] = accessid
+  this.formData['policy'] = policy
+  this.formData['Signature'] = signature
+  this.formData['callback'] = callback
+  return true
+},
+// MD5 加密， 获取上传的文件名方法
 getName(file) {
-        return new Promise(resolve => {
-          const { name } = file
-          const suffix = name.substr(name.lastIndexOf('.'))
-          const spark = new SparkMD5.ArrayBuffer()
-          const reader = new FileReader()
-          reader.readAsArrayBuffer(file)
-          reader.addEventListener('load', (e) => {
-            spark.append(e.target.result)
-            resolve(spark.end() + suffix) // 文件md5加密，放置重复上传
-          })
-        })
-      },
+    return new Promise(resolve => {
+    const { name } = file
+    // 截取文件后缀
+    const suffix = name.substr(name.lastIndexOf('.'))
+    const spark = new SparkMD5.ArrayBuffer()
+    const reader = new FileReader()
+    reader.readAsArrayBuffer(file)
+    reader.addEventListener('load', (e) => {
+      spark.append(e.target.result)
+      resolve(spark.end() + suffix) // 文件md5加密，放置重复上传
+    })
+  })
+},
 ```
-
-2018 年 11 月 02 日
