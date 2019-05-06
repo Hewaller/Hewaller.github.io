@@ -5,7 +5,7 @@ date: 2018-11-06
 categories: webpack
 tags:
   - webpack
-  - Javascript
+  - JavaScript
   -
 ---
 

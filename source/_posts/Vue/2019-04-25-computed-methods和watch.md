@@ -1,9 +1,9 @@
 ---
 title: 'computed、methods 和 watch'
 date: 2019-04-25
-categories: vue # 分类只能有1个
+categories: Vue # 分类只能有1个
 tags: # 标签可以有多个
-  - vue
+  - Vue
   - 前端
 ---
 
