@@ -1,6 +1,6 @@
 ---
 layout: post
-title: require和import
+title: 前端模块化
 date: 2018-11-07
 categories: ES6
 tags:
