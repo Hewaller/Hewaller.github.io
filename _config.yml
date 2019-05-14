@@ -40,7 +40,7 @@ post_asset_folder: false
 relative_link: false
 future: true
 highlight:
-  enable: true
+  enable: false
   line_number: true
   auto_detect: false
   tab_replace:
@@ -82,3 +82,7 @@ deploy:
   repo: https://github.com/Hewaller/Hewaller.github.io
   type: git
   branch: master
+
+## 自定义代码高亮
+marked:
+  langPrefix: language-
