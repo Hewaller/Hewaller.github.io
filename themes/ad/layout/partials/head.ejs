@@ -22,12 +22,7 @@
   />
 
   <% if ((page.tags && page.tags.length) || (page.categories &&
-  page.categories.length)) { %>
-  <!-- <meta
-    name="keywords"
-    content="<% page.categories.forEach((category) => { %><%= category.name %>,<% }); %><% page.tags.forEach((tag) => { %><%= tag.name %>,<% }); %>"
-  /> -->
-  <% } else { %>
+  page.categories.length)) { %> <% } else { %>
   <meta name="keywords" content="<%= theme.keywords %>" />
   <% } %> <% let description; const re = /<[^>]+>|\n|"/gim; if(is_post()) {
   description = page.description || page.excerpt.replace(re, ''); } description
