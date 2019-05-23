@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <%- partial('partials/head') %>
+
+  <body>
+    <%- partial('partials/header') %>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      <%- body %>
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+    <% if( (theme.leancloud.comment || theme.disqus.enable) && (is_post() ||
+    page.type === 'about' || page.type === 'friends') ){ %> <%-
+    partial('components/comment') %> <% } %> <%- partial('partials/footer') %>
+    <%- partial('components/layer') %> <%- partial('components/bottom-bar') %>
+    <%- partial('components/share') %> <%- partial('components/analytics') %> <%
+    if (theme.custom_scripts){ %> <%- js(theme.custom_scripts) %> <% } %>
+  </body>
+</html>

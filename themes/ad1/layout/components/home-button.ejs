@@ -1,0 +1,25 @@
+<% let catalog = false, comments = { link: '', enable: false }, next = { link:
+'javascript:void(0);', enable: false }, prev = { link: 'javascript:void(0);',
+enable: false }; if(is_home()) { prev.enable = page.current !== 1; prev.link =
+prev.enable ? url_for(page.prev_link) : 'javascript:void(0);'; next.enable =
+page.current !== page.total; next.link = next.enable ? url_for(page.next_link) :
+'javascript:void(0);'; } else if (is_post()) { prev.link = page.prev ?
+url_for(page.prev.path) : 'javascript:void(0);'; prev.enable = !!page.prev;
+next.link = page.next ? url_for(page.next.path) : 'javascript:void(0);';
+next.enable = !!page.next; } else if (is_archive() || is_tag() || is_category())
+{ prev.link = page.prev_link ? url_for(page.prev_link) : 'javascript:void(0);';
+prev.enable = !!page.prev_link; next.link = page.next_link ?
+url_for(page.next_link) : 'javascript:void(0);'; next.enable = !!page.next_link;
+} if (is_post() || page.type === 'about' || page.type === 'friends') { catalog =
+true; if(theme.leancloud.comment) { comments.enable = true; comments.link =
+'#site-comment'; } else if (theme.disqus.enable) { comments.enable = true;
+comments.link = '#disqus_thread'; } } %>
+
+<div class="footer-bar">
+  <a href="<%- prev.link %>" data-enable="<%- prev.enable %>">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="<%- next.link %>" data-enable="<%- next.enable %>">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
