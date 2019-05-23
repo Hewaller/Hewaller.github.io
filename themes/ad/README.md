@@ -30,7 +30,7 @@
 
 - **Directions**: Make full use of the four directions of the computer screen up, down, left and right. Navigation bar, function bar, sharing bar, and article directory are placed separately.
 - **Multi-column**: built-in single-column, double-column display style, automatic response to screen width changes.
-- **Color**: The website uses a total of 20 main colors, each of which is divided into 10 types from light to heavy. So, total number is 20*10 = 200.
+- **Color**: The website uses a total of 20 main colors, each of which is divided into 10 types from light to heavy. So, total number is 20\*10 = 200.
 - **Icon**: Use the icon provided by the open source project "FontAwesome".
 - **Mobile**: Take advantage of CSS3 and modern browsers to make it perform well (just a small amount of style code).
 - **Highlight**: 5 kinds of code highlighting styles provided by "Tomorrow-Theme".
@@ -45,6 +45,7 @@
 
 ## Contact
 
+- test
 - 📧 Email: yuanxin.me@gmail.com
-- 🐧 QQ交流群: 534018786
-    ![](https://godbmw.com/blog-static/images/开源项目/开源博客-theme-bmw-微声版发布/qq.png)
+- 🐧 QQ 交流群: 534018786
+  ![](https://godbmw.com/blog-static/images/开源项目/开源博客-theme-bmw-微声版发布/qq.png)
