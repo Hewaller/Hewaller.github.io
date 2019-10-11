@@ -2,7 +2,7 @@
 layout: post
 title: cropperJS -- nuxt服务端渲染
 date: 2018-11-02
-categories: nuxt
+categories: 服务端渲染
 tags:
   - 文件上传
   - nuxt

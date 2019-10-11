@@ -2,11 +2,10 @@
 layout: post
 title: 前端模块化
 date: 2018-11-07
-categories: ES6
+categories: 前端
 tags:
   - JavaScript
   - 前端
-  - ES6
 ---
 
 `require` 和 `import`

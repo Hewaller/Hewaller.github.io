@@ -4,8 +4,7 @@ title: Cookie 、 Session 和 Token
 date: 2019-03-07
 categories: 前端
 tags:
-  - token
-  - cookie
+  - 前端
   - 网络安全
 ---
 
