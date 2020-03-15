@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>Ant design Vue | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="ant-design-UI 框架最后更新日期 2019-03-09">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-03-07
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/antd/"><i class="fa fa-bookmark"></i>antd</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    Ant design Vue
+  </h1>
+  
+  <article class="passage-article">
+    <h1 id="初期使用感受"><a href="#初期使用感受" class="headerlink" title="初期使用感受"></a>初期使用感受</h1><h2 id="element-UI-和-Ant-Design-Vue-的区别"><a href="#element-UI-和-Ant-Design-Vue-的区别" class="headerlink" title="element-UI 和 Ant Design Vue 的区别"></a>element-UI 和 Ant Design Vue 的区别</h2><p>我司现在和以前的后台主要 UI 框架是 <code>element-ui</code>，在 <code>Ant Design Vue</code> 官宣之前就一直在关注，但是由于项目时间的不允许和 UI 框架稳定性的多方面考虑，一直都没机会尝试使用 <code>antd</code> 来搭建一个新的后台模版。</p>
+<h2 id="table"><a href="#table" class="headerlink" title="table"></a>table</h2><h3 id="基本功能"><a href="#基本功能" class="headerlink" title="基本功能"></a>基本功能</h3><p>自带分页、搜索、排序、自定义操作等功能<br>使用 slot 插入其他组件、展示数据</p>
+<h3 id="日常使用参数"><a href="#日常使用参数" class="headerlink" title="日常使用参数"></a>日常使用参数</h3><pre><code class="language-html">&lt;a-table
+  :columns=&quot;columns&quot;
+  rowKey=&quot;id&quot;
+  :dataSource=&quot;data&quot;
+  :pagination=&quot;pagination&quot;
+  @change=&quot;handleTableChange&quot;
+&gt;
+  &lt;template #cover_url=&quot;cover_url&quot;&gt;
+    &lt;my-image :src=&quot;cover_url&quot;&gt;&lt;/my-image&gt;
+  &lt;/template&gt;
+
+  &lt;template #has_pano_new=&quot;has_pano_new&quot;&gt;
+    &lt;span&gt;{{has_pano_new}}slot插值&lt;/span&gt;
+  &lt;/template&gt;
+
+  &lt;template #action=&quot;text, record&quot;&gt;
+    &lt;my-button
+      @click=&quot;changeStatus(record)&quot;
+      :status=&quot;record.status&quot;
+    &gt;&lt;/my-button&gt;
+    &lt;my-button @click=&quot;toEdit(record)&quot; ghost type=&quot;edit&quot;&gt;&lt;/my-button&gt;
+    &lt;my-button @click=&quot;remove(record)&quot; ghost type=&quot;remove&quot;&gt;&lt;/my-button&gt;
+  &lt;/template&gt;
+&lt;/a-table&gt;
+</code></pre>
+<pre><code class="language-js">data() {
+    return {
+        data: [
+             {
+              title: &#39;操作&#39;,
+              dataIndex: &#39;action&#39;,
+              scopedSlots: { customRender: &#39;action&#39; }
+            }
+        ]
+    }
+}
+</code></pre>
+<blockquote>
+<p>参数：<br><code>columns</code>: 表格每行的数据和定义表头<br><code>dataSource：</code> 表格全部数据，<code>dataSource</code> 和 <code>columns</code> 里的数据值都需要指定 <code>key</code> 值。对于 <code>dataSource</code> 默认将每列数据的 <code>key</code> 属性作为唯一的标识。<br><code>rowKey</code>: 每行单独的 <code>key</code>，必须值，不可重复和不赋值，一般为 <code>id</code> &gt; <code>pagination</code>: 表格自带的分页，接受一个 <code>Obj</code> 对象<br><code>handleTableChange：</code> 翻页触发的回调</p>
+</blockquote>
+<blockquote>
+<p>slot 插值<br><code>#action=&quot;text, record&quot;</code> 相当于<code>v-slot:action=&quot;text,record&quot;</code><br><code>slot</code>中包含两个参数，第一个是当前列的值，参照<code>cover_url</code>，<code>record</code>代表的是当前行对应的值，相等于<code>elment-ui</code>中<code>scope.row</code>，都可以取得当前行的所有数据</p>
+</blockquote>
+<h3 id="排序和筛选"><a href="#排序和筛选" class="headerlink" title="排序和筛选"></a>排序和筛选</h3><p>不需要指定具体的 <code>onFilter</code> 和 <code>sorter</code> 函数，而是在把筛选和排序的参数发到服务端来处理。<br>也可以通过 <code>slot</code> 来自定义筛选功能</p>
+<pre><code class="language-js">    [
+        { title: &#39;Name&#39;,
+          dataIndex: &#39;name&#39;,
+          sorter: true,
+          scopedSlots: { customRender: &#39;name&#39; }
+        },
+        {
+            title: &#39;Gender&#39;,
+            dataIndex: &#39;gender&#39;,
+            filters: [
+              { text: &#39;Male&#39;, value: &#39;male&#39; },
+              { text: &#39;Female&#39;, value: &#39;female&#39; },
+            ],
+        }
+    ]
+
+    handleTableChange (pagination, filters, sorter) {
+        // do something
+    }
+</code></pre>
+<h2 id="form"><a href="#form" class="headerlink" title="form"></a>form</h2><p>最重要的表单数据填充、验证和提交</p>
+<h3 id="Ant-design-vue-的表单验证"><a href="#Ant-design-vue-的表单验证" class="headerlink" title="Ant-design-vue 的表单验证"></a>Ant-design-vue 的表单验证</h3><pre><code class="language-html">&lt;a-form-item v-bind=&quot;mapLayout&quot; label=&quot;图片附件&quot;&gt;
+  &lt;hotel-upload
+    v-decorator=&quot;[&#39;attach&#39;, {initialValue: [],rules:[{validator: imageLengthValidate}]}]&quot;
+    :limit=&quot;100&quot;
+    :validate=&quot;validateImageSize&quot;
+  &gt;
+  &lt;/hotel-upload&gt;
+&lt;/a-form-item&gt;
+</code></pre>
+<p>使用到的表单验证一般都会定义在 <code>rules</code> 中，但是也不能排除特出情况</p>
+<blockquote>
+<p>例如在图片上传时需要判断图片的 size，主要氛围两种情况：</p>
+</blockquote>
+<ul>
+<li>在上传到服务器之前，使用 <code>new Image()</code> 和 <code>URL.createObjectURL(file)</code>提前获得本地图片大小判断，不符合 size 就阻止上传；</li>
+<li>上传之后在提交时触发提交事件，主动触发表单的验证，使用图片的 URL 实例化本地图片在判断是否合规，决定是否可以提交</li>
+</ul>
+<h3 id="简单的自定义表单验证"><a href="#简单的自定义表单验证" class="headerlink" title="简单的自定义表单验证"></a>简单的自定义表单验证</h3><p><a href="https://github.com/ant-design/ant-design/issues/5155" target="_blank" rel="noopener">为什么 form 验证的 callback 必须被调用</a></p>
+<pre><code class="language-js">// 表单中的input或者其他组件
+// v-decorator =&quot;[&#39;name&#39;, {initialValue: &#39;&#39;, rules: [{required: true, message: &#39;some....&#39;}, {validator: validator}]}]&quot;
+
+validator(file, value, callback) {
+    if(value === &#39;....&#39;){
+        // 验证没通过
+        callback(&#39;验证没通过&#39;)
+    } else {
+        callback()
+    }
+    // 无论验证是否通过，callback必须被调用
+}
+
+</code></pre>
+<blockquote>
+<p>以此类推，我们可以为表单添加多个验证规则 <code>rules:[{required: true, message: &#39;some....&#39;}, {validator: imageLengthValidate}]</code></p>
+</blockquote>
+<h2 id="验证图片宽高大小的方式"><a href="#验证图片宽高大小的方式" class="headerlink" title="验证图片宽高大小的方式"></a>验证图片宽高大小的方式</h2><ol>
+<li>上传至服务器之后的验证（通过表单验证的形式）</li>
+</ol>
+<pre><code class="language-js">// 验证方法 utils.js
+export function imageInfo(src) {
+  return new Promise((resolve, reject) =&gt; {
+    // 通过图片上传后的地址来验证
+    if (!/[jpeg|png|jpg|gif|svg|ico]/gi.test(src)) {
+      message.warning(&#39;请上传图片类型文件&#39;)
+      return
+    }
+    const img = new Image()
+    img.src = src
+    img.onload = function() {
+      const { width, height } = this
+      resolve({
+        height,
+        width
+      })
+    }
+    img.onerror = e =&gt; {
+      message.error(&#39;图片加载失败&#39;)
+      reject(e)
+    }
+  })
+}
+
+//表单中附加的验证方法
+const imagesSize = async (file, value, callback) =&gt; {
+  let error = undefined
+  // 因为验证方法中使用是异步，所以不能使用map来对数组进行遍历，使用for循环可以很好的解决这这个问题
+  for (let i = 0; i &lt; value.length; i++) {
+    // 循环遍历验证，但是问题是即使某张图验证失败了，不能准确定位到不合规格的图片
+    const { url } = value[i]
+    const { width, height } = await imageInfo(url)
+    if (width !== 1920 || height !== 1276) {
+      error = &#39;尺寸限制：1920x1276&#39;
+      break
+    }
+  }
+  callback(error)
+}
+</code></pre>
+<ol start="2">
+<li>上传之前的验证<br><code>utils.js</code> 中定义一个公共验证的方法，在需要的时候通过 props 传到上传组件中</li>
+</ol>
+<pre><code class="language-js">// utils.js
+export function beforeImageInfo(file) {
+  // 无论失败还是成功都需要返回一个  `Promise`
+  return new Promise((resolve, reject) =&gt; {
+    if (!/^image\/[jpeg|png|jpg|gif|svg|ico]/gi.test(file.type)) {
+      message.warning(&#39;请上传图片类型文件&#39;)
+      return
+    }
+    const img = new Image()
+    img.src = URL.createObjectURL(file)
+    img.onload = function() {
+      const { width, height } = this
+      resolve({
+        height,
+        width
+      })
+    }
+    img.onerror = e =&gt; {
+      message.error(&#39;图片加载失败&#39;)
+      reject(e)
+    }
+  })
+}
+</code></pre>
+<ol start="3">
+<li>如何在封装的组件中使用验证，拦截一切我们不需要的内容</li>
+</ol>
+<pre><code class="language-js">// 封装的组件中使用验证
+async beforeUpload(file) {
+      if (file.size / 1000 &gt; this.size) {
+        const message = &#39;图片过大&#39;;
+        this.$message.warning(message);
+        return Promise.reject(message);
+      }
+      if (this.validate) {
+        await this.validate(file);
+      }
+      // 上传之前验证，不通过不上传
+      this.formData.token = await qnToken(this.tokenType);
+      return true;
+    }
+</code></pre>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#初期使用感受"><span class="toc-text">初期使用感受</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#element-UI-和-Ant-Design-Vue-的区别"><span class="toc-text">element-UI 和 Ant Design Vue 的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#table"><span class="toc-text">table</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#基本功能"><span class="toc-text">基本功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日常使用参数"><span class="toc-text">日常使用参数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#排序和筛选"><span class="toc-text">排序和筛选</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#form"><span class="toc-text">form</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Ant-design-vue-的表单验证"><span class="toc-text">Ant-design-vue 的表单验证</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#简单的自定义表单验证"><span class="toc-text">简单的自定义表单验证</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#验证图片宽高大小的方式"><span class="toc-text">验证图片宽高大小的方式</span></a></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2019-03-07-antd-vue/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/前端框架/"><i class="fa fa-tags"></i>前端框架</a>
+    
+    <a href="/tags/antd/"><i class="fa fa-tags"></i>antd</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2019-03-11-charles/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2019-03-08-cookie、session和token/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2019-03-11-charles/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2019-03-08-cookie、session和token/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>cropperJS -- nuxt服务端渲染 | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="服务端渲染实现图片自定义裁剪和上传和一些图片上传的知识点最后更新日期 2018 年 11 月 02 日">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2018-11-02
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/服务端渲染/"><i class="fa fa-bookmark"></i>服务端渲染</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    cropperJS -- nuxt服务端渲染
+  </h1>
+  
+  <article class="passage-article">
+    <h1 id="裁剪组件的选择"><a href="#裁剪组件的选择" class="headerlink" title="裁剪组件的选择"></a>裁剪组件的选择</h1><pre><code class="language-js"> $ npm install cropperjs
+</code></pre>
+<h2 id="服务端渲染的注意事项"><a href="#服务端渲染的注意事项" class="headerlink" title="服务端渲染的注意事项"></a>服务端渲染的注意事项</h2><ol>
+<li>在服务端渲染时由于不能在组件刚加载时候直接操纵 DOM，因为在加载的时候 demo 还没有渲染出来</li>
+<li>在服务端渲染时找不到 window，所有的 DOM 操作都应当被避免</li>
+<li>使用的组件要注意它是否是在 created 的生命周期被加载或者说被挂载的，只有他在 mounted 时被加载才能被用在服务端渲染</li>
+</ol>
+<h3 id="必须需要使用-DOM-操作的方法"><a href="#必须需要使用-DOM-操作的方法" class="headerlink" title="必须需要使用 DOM 操作的方法"></a>必须需要使用 DOM 操作的方法</h3><pre><code class="language-js">mounted() {
+    this.init() // 初始化需要映入的插件或者实例化
+}
+methods: {
+    async init() {
+        import(&#39;cropperjs&#39;).then(module =&gt; {
+        // 通过promise的then方法确保cropper是在组件mounted时被实例化，目的是能够操作DOM
+          this.Cropper = module.default
+          // 初始化canavas
+          this.url = this.information.avatar_url
+          // 初始化图片地址
+          this.$nextTick(this.initCropper)
+        // nextTick 异步更新列队，在不得不操纵DOM时应该去使用的一个方法
+        //为了在数据变化之后等待 Vue 完成更新 DOM ，可以在数据变化之后立即使用 Vue.nextTick(callback) 。
+        //这样回调函数在 DOM 更新完成后就会调用。
+        })
+      }
+}
+</code></pre>
+<h3 id="点击图片上传（本地图片上传，被劫持转化为-base64）"><a href="#点击图片上传（本地图片上传，被劫持转化为-base64）" class="headerlink" title="点击图片上传（本地图片上传，被劫持转化为 base64）"></a>点击图片上传（本地图片上传，被劫持转化为 base64）</h3><p>遇到的问题： 上传的图片没有改变初始化加载的图片</p>
+<pre><code class="language-js">async upload() {
+        const {input} = this.$refs
+        const [file] = input.files
+        input.value = &#39;&#39;
+        this.name = await this.getName(file) //获取加密后的文件名
+        this.url = URL.createObjectURL(file) // 文件blob转base64格式
+        // 处理图片上传后替换原来的图片
+        if (this.cropper) {
+          this.cropper.replace(this.url)
+          // 这个插件提供的一个替换图片路径的方法
+        } else {
+          this.$nextTick(this.initCropper)
+          // 如果上传失败，初始化画布
+        }
+      },
+</code></pre>
+<h3 id="渲染画布，实现拖拽和缩放"><a href="#渲染画布，实现拖拽和缩放" class="headerlink" title="渲染画布，实现拖拽和缩放"></a>渲染画布，实现拖拽和缩放</h3><p>使用 cropperJS 插件完成业务需求， 实现的原理是通过 <code>canvas</code> 来渲染画布和截取,具体的配置可以参考 <a href>cropperjs</a> <code>demo</code> 和注释如下：</p>
+<pre><code class="language-js">initCropper() {
+        const minAspectRatio = 0.5;
+        const maxAspectRatio = 1.5;
+        // this.$refs.image取当前的图片为基准，展示容器
+        const cropper = new this.Cropper(this.$refs.image, {
+          aspectRatio: 1 / 1, //等比缩放（正方形）
+          ready: () =&gt; {
+            const minAspectRatio = 0.5; // 图片宽高比
+            const maxAspectRatio = 1.5;
+            this.cropper = cropper
+            const containerData = cropper.getContainerData();
+            // 裁剪狂大小
+            const cropBoxData = cropper.getCropBoxData();
+            // 裁剪框位置和尺寸数据
+            const aspectRatio = cropBoxData.width / cropBoxData.height;
+            let newCropBoxWidth;
+            // 限制裁剪框的最大尺寸，不能超过画布的大小
+            if (aspectRatio &lt; minAspectRatio || aspectRatio &gt; maxAspectRatio) {
+              newCropBoxWidth = cropBoxData.height * ((minAspectRatio + maxAspectRatio) / 2);
+
+              cropper.setCropBoxData({
+                left: (containerData.width - newCropBoxWidth) / 2,
+                width: newCropBoxWidth
+              });
+            }
+          },
+          // 移动裁剪框并获取裁剪图片的信息
+          cropmove: () =&gt; {
+            const cropBoxData = cropper.getCropBoxData();
+            const aspectRatio = cropBoxData.width / cropBoxData.height;
+            if (aspectRatio &lt; minAspectRatio) {
+              cropper.setCropBoxData({
+                width: cropBoxData.height * minAspectRatio
+              });
+            } else if (aspectRatio &gt; maxAspectRatio) {
+              cropper.setCropBoxData({
+                width: cropBoxData.height * maxAspectRatio
+              });
+            }
+            this.fileBas = cropper.getCroppedCanvas().toDataURL()
+            // 获取到被裁剪的图片信息转化为base64的数据
+            // console.log(this.fileBas)
+          }
+        });
+      },
+</code></pre>
+<h3 id="base64-转化为-bolb-类型"><a href="#base64-转化为-bolb-类型" class="headerlink" title="base64 转化为 bolb 类型"></a>base64 转化为 bolb 类型</h3><blockquote>
+<p>改变文件类型，返回一个二进制的对象</p>
+</blockquote>
+<pre><code class="language-js">dataURItoBlob(base64Data) {
+        let byteString;
+        if (base64Data.split(&#39;,&#39;)[0].indexOf(&#39;base64&#39;) &gt;= 0)
+          byteString = atob(base64Data.split(&#39;,&#39;)[1]);
+        else
+          byteString = unescape(base64Data.split(&#39;,&#39;)[1]);
+        const mimeString = base64Data.split(&#39;,&#39;)[0].split(&#39;:&#39;)[1].split(&#39;;&#39;)[0];
+        const ia = new Uint8Array(byteString.length);
+        for (let i = 0; i &lt; byteString.length; i++) {
+          ia[i] = byteString.charCodeAt(i);
+        }
+        // 返回一个bolb二进制的对象
+        return new Blob([ia], {
+          type: mimeString
+        })
+      },
+</code></pre>
+<h3 id="保存裁剪的图片并且上传"><a href="#保存裁剪的图片并且上传" class="headerlink" title="保存裁剪的图片并且上传"></a>保存裁剪的图片并且上传</h3><ul>
+<li>遇到的问题： 首次获取到数据后如果不移动裁剪框是不能获取到裁剪内数据的，从服务端加载的数据是没法获取到文件名的，</li>
+<li>解决的思路： 可以使用时间戳命名进行上传</li>
+</ul>
+<pre><code class="language-js">async save() {
+        if(!this.fileBas) {
+        // 没有移动裁剪框或者没拿到值，再次拿取当前裁剪框默认的位置
+         this.fileBas = this.cropper.getCroppedCanvas().toDataURL()
+        }
+        // base64转化为bolb
+        const file = this.dataURItoBlob(this.fileBas)
+        // 进行上传前的认证
+        if (!(await this.beforeUpload(file))) return
+        const fd = new FormData()
+        Object.entries(this.formData).forEach(([key, value]) =&gt; {
+          fd.append(key, value)
+        })
+        fd.append(&#39;file&#39;, file)
+        const { data } = await axios({
+          url: this.action,
+          data: fd,
+          method: &#39;post&#39;
+        })
+        const { path } = data
+        // 从store中拿数据时，并且要修改时，最好还是解构出来赋值给一个新的属性，再进行修改，防止引用类型的存在直接修改store里的数据，导致报错
+        const d = {...this.information}
+        d.avatar = path
+        delete d.avatar_url
+        await this.$store.dispatch(&#39;userInformation/updateInformation&#39;, d)
+        Message.success(&#39;保存成功&#39;)
+      },
+</code></pre>
+<h3 id="从-token-中获取上传的签名和使用-MD5-加密防止重名文件上传被覆盖"><a href="#从-token-中获取上传的签名和使用-MD5-加密防止重名文件上传被覆盖" class="headerlink" title="从 token 中获取上传的签名和使用 MD5 加密防止重名文件上传被覆盖"></a>从 <code>token</code> 中获取上传的签名和使用 <code>MD5</code> 加密防止重名文件上传被覆盖</h3><p>Q： 如果直接使用文件名作为上传的文件名称， 在不同目录下的同名文件上传到服务器之后，由于上传的名称相同会导致以前的文件被覆盖，问题难以被发现</p>
+<p>A:</p>
+<ul>
+<li>文件名加上当前事件戳（毫秒级），但不够优雅</li>
+<li>使用 <code>MD5</code> 加密， 解决命名重复问题</li>
+</ul>
+<pre><code class="language-js">async beforeUpload() {
+  const token = await this.$store.dispatch(&#39;getToken/getAliToken&#39;)
+  const { accessid, callback, dir, host, policy, signature } = token
+  this.action = host
+  this.formData[&#39;key&#39;] = this.name ? `${dir}${this.name}` : (Date.now() + this.url.substr(this.url.lastIndexOf(&#39;.&#39;)).split(&#39;-&#39;)[0])
+  // (Date.now() + this.url.substr(this.url.lastIndexOf(&#39;.&#39;)).split(&#39;-&#39;)[0])服务端拿取的图片命名规则
+  // this.formData[&#39;key&#39;] = `${dir}${md5(file.name)}${file.name.substr(file.name.indexOf(&#39;.&#39;))}`
+  this.formData[&#39;OSSAccessKeyId&#39;] = accessid
+  this.formData[&#39;policy&#39;] = policy
+  this.formData[&#39;Signature&#39;] = signature
+  this.formData[&#39;callback&#39;] = callback
+  return true
+},
+// MD5 加密， 获取上传的文件名方法
+getName(file) {
+    return new Promise(resolve =&gt; {
+    const { name } = file
+    // 截取文件后缀
+    const suffix = name.substr(name.lastIndexOf(&#39;.&#39;))
+    const spark = new SparkMD5.ArrayBuffer()
+    const reader = new FileReader()
+    reader.readAsArrayBuffer(file)
+    reader.addEventListener(&#39;load&#39;, (e) =&gt; {
+      spark.append(e.target.result)
+      resolve(spark.end() + suffix) // 文件md5加密，放置重复上传
+    })
+  })
+},
+</code></pre>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#裁剪组件的选择"><span class="toc-text">裁剪组件的选择</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#服务端渲染的注意事项"><span class="toc-text">服务端渲染的注意事项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#必须需要使用-DOM-操作的方法"><span class="toc-text">必须需要使用 DOM 操作的方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#点击图片上传（本地图片上传，被劫持转化为-base64）"><span class="toc-text">点击图片上传（本地图片上传，被劫持转化为 base64）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#渲染画布，实现拖拽和缩放"><span class="toc-text">渲染画布，实现拖拽和缩放</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#base64-转化为-bolb-类型"><span class="toc-text">base64 转化为 bolb 类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#保存裁剪的图片并且上传"><span class="toc-text">保存裁剪的图片并且上传</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#从-token-中获取上传的签名和使用-MD5-加密防止重名文件上传被覆盖"><span class="toc-text">从 token 中获取上传的签名和使用 MD5 加密防止重名文件上传被覆盖</span></a></li></ol></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2018-11-02-cropperJs/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/文件上传/"><i class="fa fa-tags"></i>文件上传</a>
+    
+    <a href="/tags/nuxt/"><i class="fa fa-tags"></i>nuxt</a>
+    
+    <a href="/tags/服务端渲染/"><i class="fa fa-tags"></i>服务端渲染</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2018-10-20-webpack-learning/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2018-09-28-js-array-method/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2018-10-20-webpack-learning/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2018-09-28-js-array-method/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

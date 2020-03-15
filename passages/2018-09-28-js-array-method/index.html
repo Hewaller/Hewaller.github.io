@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>JavaScript - 常用数组操作方法 | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="JavaScript常用数组操作方法，包含ES6方法">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2018-09-28
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/JavaScript/"><i class="fa fa-bookmark"></i>JavaScript</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    JavaScript - 常用数组操作方法
+  </h1>
+  
+  <article class="passage-article">
+    <h1 id="ES6"><a href="#ES6" class="headerlink" title="ES6"></a>ES6</h1><h2 id="Array-of"><a href="#Array-of" class="headerlink" title="Array.of()"></a>Array.of()</h2><p>用于将一组值，转换为数组。这个方法的主要目的，是弥补数组构造函数 Array() 的不足。因为参数个数的不同，会导致 Array() 的行为有差异。</p>
+<pre><code class="language-javascript">Array(3) //[,,,]
+Array.of(3) //[3]
+Array(1, 2, 3) //[1,2,3]
+Array.of(1, 2, 3) //[1,2,3] 多于2个参数，组成新数组
+</code></pre>
+<h3 id="includes"><a href="#includes" class="headerlink" title="includes()"></a>includes()</h3><p>判断数组中是否存在该元素，参数：查找的值、起始位置，可以替换 ES5 时代的 indexOf 判断方式。indexOf 判断元素是否为 NaN，会判断错误。</p>
+<pre><code>[1, 2, 3].includes(2) // true
+[1, 2, 3].includes(4) // false
+[1, 2, NaN].includes(NaN) // true
+[1, 2, 3].includes(3, 3) // false
+[1, 2, 3].includes(3, -1) // true
+[NaN].includes(NaN) //true
+</code></pre><h3 id="Array-from"><a href="#Array-from" class="headerlink" title="Array.from()"></a>Array.from()</h3><p>用于将两类对象转为真正的数组：类似数组的对象（array-like object）和可遍历（iterable）的对象（包括 ES6 新增的数据结构 Set 和 Map）。</p>
+<pre><code class="language-javascript">Array.from(&#39;foo&#39;) //[&#39;f&#39;,&#39;o&#39;,&#39;o&#39;]
+</code></pre>
+<h3 id="find-findIndex"><a href="#find-findIndex" class="headerlink" title="find() findIndex()"></a>find() findIndex()</h3><p><code>find</code>方法用于找出第一个符合条件的数组成员。它的参数是一个回调函数，所有数组成员依次执行该回调函数，直到找出第一个返回值为<code>true</code>的成员，然后返回该成员。如果没有符合条件的成员，则返回 undefined。</p>
+<pre><code>[1, 4, -5, 10].find(n =&gt; n &lt; 0) // 返回第一个满足条件的成员
+// -5
+</code></pre><p><code>findIndex</code>方法的用法与 find 方法非常类似，返回第一个符合条件的数组成员的位置，如果所有成员都不符合条件，则返回-1</p>
+<pre><code>[1, 5, 10, 15].findIndex(function(value, index, arr) {
+  return value &gt; 9
+}) // 2
+</code></pre><p>这两个方法都可以接受第二个参数，用来绑定回调函数的 this 对象。</p>
+<pre><code class="language-javascript">function f(v) {
+  return v &gt; this.age
+}
+let person = { name: &#39;John&#39;, age: 20 }
+;[10, 12, 26, 15].find(f, person) // 26
+</code></pre>
+<p>上面的代码中，find 函数接收了第二个参数 person 对象，回调函数中的 this 对象指向 person 对象。<br>另外，这两个方法都可以发现 <code>NaN</code>，弥补了数组的 <code>indexOf</code> 方法的不足。</p>
+<pre><code class="language-javascript">const arr = [NAN]
+arr.indexOf(NaN)
+// -1
+arr.findIndex(y =&gt; Object.is(NaN, y))
+// 0
+</code></pre>
+<p>上面代码中，indexOf 方法无法识别数组的 NaN 成员，但是 findIndex 方法可以借助 Object.is 方法做到。</p>
+<h3 id="fill"><a href="#fill" class="headerlink" title="fill()"></a>fill()</h3><p>方法使用给定值，填充一个数组。</p>
+<pre><code>[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;].fill(1) // [1, 1, 1]
+new Array(3).fill(1) // [1, 1, 1]
+//上面代码表明，fill方法用于空数组的初始化非常方便。数组中已有的元素，会被全部抹去。
+</code></pre><p>fill 方法还可以接受第二个和第三个参数，用于指定填充的起始位置和结束位置。</p>
+<pre><code>[&#39;a&#39;, &#39;b&#39;, &#39;c&#39;].fill(7, 1, 2) // [&#39;a&#39;, 7, &#39;c&#39;]
+//上面代码表示，fill方法从 1 号位开始，向原数组填充 7，到 2 号位之前结束。
+</code></pre><p>注意，如果填充的类型为对象，那么被赋值的是同一个内存地址的对象，而不是深拷贝对象。</p>
+<pre><code class="language-javascript">let arr = new Array(3).fill({ name: &#39;Mike&#39; })
+arr[0].name = &#39;Ben&#39;
+arr
+// [{name: &quot;Ben&quot;}, {name: &quot;Ben&quot;}, {name: &quot;Ben&quot;}]
+
+let arr = new Array(3).fill([])
+arr[0].push(5)
+arr
+// [[5], [5], [5]]
+</code></pre>
+<h3 id="copyWithin"><a href="#copyWithin" class="headerlink" title="copyWithin()"></a>copyWithin()</h3><p>在当前数组内部，将指定位置的成员复制到其他位置（会覆盖原有成员），然后返回当前数组。会修改当前数组。</p>
+<pre><code>[1, 2, 3, 4, 5].copyWithin(0, 3) // [4, 5, 3, 4, 5]
+[1, 2, 3, 4, 5].copyWithin(0, 3, 4) // [4, 2, 3, 4, 5]
+[1, 2, 3, 4, 5].copyWithin(0, -2, -1) //[4, 2, 3, 4, 5]
+</code></pre><h3 id="flat-flatMap"><a href="#flat-flatMap" class="headerlink" title="flat() flatMap()"></a>flat() flatMap()</h3><p>数组的成员有时还是数组，Array.prototype.flat()用于将嵌套的数组“拉平”，变成一维的数组。该方法返回一个新数组，对原数据没有影响。</p>
+<pre><code>[1, 2, [3, 4]].flat() // [1, 2, 3, 4]
+[1, 2, [3, [4, 5]]].flat(2) // [1, 2, 3, 4, 5]
+//flat()默认只会“拉平”一层，如果想要“拉平”多层的嵌套数组，可以将flat()方法的参数写成一个整数，表示想要拉平的层数，默认为1。
+[1, [2, [3]]].flat(Infinity) // [1, 2, 3] 不管有多少层嵌套，都要转成一维数组
+[1, 2, , 4, 5].flat() // [1, 2, 4, 5]会跳过空位。
+</code></pre><p>flatMap()方法对原数组的每个成员执行一个函数（相当于执行 Array.prototype.map()），然后对返回值组成的数组执行 flat()方法。该方法返回一个新数组，不改变原数组。</p>
+<pre><code>// 相当于 [[2, 4], [3, 6], [4, 8]].flat()
+[2, 3, 4].flatMap(x =&gt; [x, x * 2])
+// [2, 4, 3, 6, 4, 8]
+
+// 相当于 [[[2]], [[4]], [[6]], [[8]]].flat()
+  [(1, 2, 3, 4)].flatMap(x =&gt; [[x * 2]])
+// [[2], [4], [6], [8]]
+</code></pre><h2 id="ES5"><a href="#ES5" class="headerlink" title="ES5"></a>ES5</h2><h4 id="concat"><a href="#concat" class="headerlink" title="concat()"></a>concat()</h4><p>concat()方法用于<code>连接</code>两个或多个数组。方法不会改变现在的数组，仅返回被连接生成的新数组。</p>
+<pre><code class="language-javascript">var arr1 = [1, 2]
+var arr2 = [3, 4]
+var arr3 = arr1.concat(arr2)
+console.log(arr1) //[1,2]
+console.log(arr3) //[1,2,3,4]
+</code></pre>
+<h3 id="join"><a href="#join" class="headerlink" title="join()"></a>join()</h3><p>join()方法用于把数组中的所有元素放入一个字符串。元素是通过指定的分隔符进行<code>分割</code>的。默认使用“,”分割。不改变原来数组。</p>
+<pre><code class="language-javascript">var arr = [1, 2]
+console.log(arr.join()) //&quot;1,2&quot;
+console.log(arr) //[1,2];
+</code></pre>
+<h3 id="push"><a href="#push" class="headerlink" title="push()"></a>push()</h3><p>push()方法用于向数组<code>末尾添加</code>一个或多个元素。返回值为新数组的<code>length</code>。会改变原数组。</p>
+<pre><code class="language-javascript">var arr = [1, 2]
+var newLength = arr.push(3, 4)
+console.log(newLength) //4
+console.log(arr) //[1,2,3,4];
+</code></pre>
+<h3 id="pop"><a href="#pop" class="headerlink" title="pop()"></a>pop()</h3><p>pop()方法用于<code>删除数组最后一个元素</code>。返回被删除的元素。会改变原数组</p>
+<pre><code class="language-javascript">var arr = [1, 2, 3, 4]
+console.log(arr.pop()) //4
+console.log(arr) //[1,2,3];
+</code></pre>
+<h3 id="shift"><a href="#shift" class="headerlink" title="shift()"></a>shift()</h3><p>shift()方法用于<code>删除数组第一个元素</code>。返回被删除的元素。会改变原数组</p>
+<pre><code class="language-javascript">var arr = [1, 2, 3, 4]
+console.log(arr.shift()) //1
+console.log(arr) //[2,3,4];
+</code></pre>
+<h3 id="unshift"><a href="#unshift" class="headerlink" title="unshift()"></a>unshift()</h3><p>unshift()方法用于向<code>数组开头添加</code>一个或多个元素。返回新数组的 length。会改变原数组</p>
+<pre><code class="language-javascript">var arr = [3, 4]
+console.log(arr.unshift(1, 2)) //4
+console.log(arr) //[1,2,3,4];
+</code></pre>
+<h3 id="slice"><a href="#slice" class="headerlink" title="slice()"></a>slice()</h3><p>slice()方法可从已有的数组中返回<code>选定</code>的元素。返回一个新的数组，包含从 start 到 end （不包括该元素）的 arrayObject 中的元素。不会改变原数组</p>
+<pre><code class="language-javascript">var arr = [1, 2, 3, 4]
+console.log(arr.slice(1, 3)) //[2,3]
+console.log(arr) //[1,2,3,4];
+</code></pre>
+<h3 id="splice"><a href="#splice" class="headerlink" title="splice()"></a>splice()</h3><p>splice()方法可用于<code>删除</code>元素，并且可选择添加新元素来<code>替换</code>被删除的元素，第一个参数表示删除操作的开始下标。第二个参数表示删除的个数，如果没有第三个参数，splice 用于删除元素。如果有第三，第四个参数，表示采用第三第四。。。参数来替换被删除第元素。方法返回被删除元素的数组，会改变原数组。</p>
+<pre><code class="language-javascript">var arr = [1, 2, 3, 4]
+console.log(arr.splice(1, 1)) //[2]
+console.log(arr) //[1,3,4];
+arr.splice(1, 0, 8, 9) //[]
+console.log(arr) //[1,8,9,3,4]
+</code></pre>
+<h3 id="sort"><a href="#sort" class="headerlink" title="sort()"></a>sort()</h3><p>sort()方法按照 Unicode code 位置<code>排序</code>，默认升序.会改变原数组。</p>
+<pre><code class="language-javascript">var arr = [1, 10, 21, 2]
+console.log(arr.sort()) //[1,10,2,21]
+</code></pre>
+<h3 id="reverse"><a href="#reverse" class="headerlink" title="reverse()"></a>reverse()</h3><p>reverse()方法用于<code>颠倒元素顺序</code>。返回颠倒后的数组。会改变原数组。</p>
+<pre><code class="language-javascript">var arr = [1, 2, 3]
+console.log(arr.reverse()) //[3,2,1]
+console.log(arr) //[3,2,1]
+</code></pre>
+<h3 id="indexOf-lastIndexOf"><a href="#indexOf-lastIndexOf" class="headerlink" title="indexOf() lastIndexOf()"></a>indexOf() lastIndexOf()</h3><p>都接受两个参数，参数一为<code>查找</code>的值，参数二为查找的起始位置。查找结果不存在为-1，存在则返回下标。<br>indexOf()从前向后。<br>lastIndexOf()从后向前。</p>
+<pre><code class="language-javascript">var arr = [1, 2, 3, 2]
+console.log(arr.indexOf(2)) //1
+console.log(arr.indexOf(9)) //-1
+console.log(arr.lastIndexOf(2)) //3
+console.log(arr.lastIndexOf(2, 2)) //1
+</code></pre>
+<h3 id="every"><a href="#every" class="headerlink" title="every()"></a>every()</h3><p>every()方法对数组对每一项元素都运行给定的函数，如果每一项都返回 true、则返回 true</p>
+<pre><code class="language-javascript">var ages = [32, 33, 16, 40]
+function checkAdult(age) {
+  return age &gt;= 18
+}
+console.log(ages.every(checkAdult)) //false
+</code></pre>
+<h3 id="some"><a href="#some" class="headerlink" title="some()"></a>some()</h3><p>some()方法对数组对每一项元素都运行给定的函数，如果任意一项返回 true、则返回 true</p>
+<pre><code class="language-javascript">var ages = [32, 33, 16, 40]
+function checkAdult(age) {
+  return age &gt;= 18
+}
+console.log(ages.some(checkAdult)) //true
+</code></pre>
+<h3 id="filter"><a href="#filter" class="headerlink" title="filter()"></a>filter()</h3><p>filter()方法对数组对每一项元素都运行给定的函数，返回结果为 true 的项组成的数组。</p>
+<pre><code class="language-javascript">var ages = [32, 33, 16, 40]
+function checkAdult(age) {
+  return age &gt;= 18
+}
+console.log(ages.filter(checkAdult)) //[32, 33, 40]
+</code></pre>
+<p>配和 includes、some 和 every 来使用</p>
+<pre><code class="language-js">const ages = [32, 33, 16, 40]
+const value = [32, 33]
+ages.filter(item =&gt; value.every(it =&gt; it !== item))
+ages.filter(item =&gt; value.includes(item))
+ages.filter(item =&gt; !value.some(it =&gt; it === item))
+</code></pre>
+<h3 id="map"><a href="#map" class="headerlink" title="map()"></a>map()</h3><p>map()方法对数组对每一项元素都运行给定的函数，返回每次函数调用的结果组成一个新函数,不改变原数组</p>
+<pre><code class="language-javascript">var ages = [1, 2, 3, 4]
+var mapFun = ages.map(function(x) {
+  return x * 2
+})
+console.log(mapFun) //[2, 4, 6，8]
+console.log(ages) //[1, 2, 3, 4];
+</code></pre>
+<h3 id="forEach-数组遍历"><a href="#forEach-数组遍历" class="headerlink" title="forEach() 数组遍历"></a>forEach() 数组遍历</h3><pre><code class="language-javascript">var ages = [1, 2, 3, 4]
+var ages2 = []
+var mapFun = ages.forEach(item =&gt; ages2.push(item))
+console.log(ages2) //[1, 2, 3, 4];
+console.log(ages) //[1, 2, 3, 4];
+</code></pre>
+<p>最后修改日期 2018 年 12 月 21 日</p>
+
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#ES6"><span class="toc-text">ES6</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Array-of"><span class="toc-text">Array.of()</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#includes"><span class="toc-text">includes()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Array-from"><span class="toc-text">Array.from()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#find-findIndex"><span class="toc-text">find() findIndex()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fill"><span class="toc-text">fill()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#copyWithin"><span class="toc-text">copyWithin()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#flat-flatMap"><span class="toc-text">flat() flatMap()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ES5"><span class="toc-text">ES5</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#concat"><span class="toc-text">concat()</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#join"><span class="toc-text">join()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#push"><span class="toc-text">push()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pop"><span class="toc-text">pop()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#shift"><span class="toc-text">shift()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#unshift"><span class="toc-text">unshift()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#slice"><span class="toc-text">slice()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#splice"><span class="toc-text">splice()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sort"><span class="toc-text">sort()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#reverse"><span class="toc-text">reverse()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#indexOf-lastIndexOf"><span class="toc-text">indexOf() lastIndexOf()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#every"><span class="toc-text">every()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#some"><span class="toc-text">some()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#filter"><span class="toc-text">filter()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#map"><span class="toc-text">map()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#forEach-数组遍历"><span class="toc-text">forEach() 数组遍历</span></a></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2018-09-28-js-array-method/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/JavaScript/"><i class="fa fa-tags"></i>JavaScript</a>
+    
+    <a href="/tags/前端/"><i class="fa fa-tags"></i>前端</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2018-11-02-cropperJs/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="javascript:void(0);" data-enable="false">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2018-11-02-cropperJs/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="javascript:void(0);" data-enable="false">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

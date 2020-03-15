@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>mpvue和Taro | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="小程序框架： mpvue 和 Taro最后更新时间 2018 年 11 月 20 日">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2018-11-20
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/weChat/"><i class="fa fa-bookmark"></i>weChat</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    mpvue和Taro
+  </h1>
+  
+  <article class="passage-article">
+    <h1 id="主要特点"><a href="#主要特点" class="headerlink" title="主要特点"></a>主要特点</h1><p>&nbsp; &nbsp; &nbsp;小程序版本的<code>Vue.js</code></p>
+<ul>
+<li>彻底的组件化开发能力：提高代码复用性</li>
+<li>完整的 <code>Vue.js</code> 开发体验</li>
+<li>方便的 <code>Vuex</code> 数据管理方案：方便构建复杂应用</li>
+<li>快捷的 <code>webpack</code> 构建机制：自定义构建策略、开发阶段 hotReload</li>
+<li>支持使用 npm 外部依赖</li>
+<li>H5 代码转换编译成小程序目标代码的能力</li>
+</ul>
+<h2 id="生命周期"><a href="#生命周期" class="headerlink" title="生命周期"></a>生命周期</h2><p>有趣的是 <a href="http://mpvue.com/mpvue/#_5" target="_blank" rel="noopener">mpvue</a> 框架的生命周期是融合了<code>vue</code>和<code>小程序</code>的生命周期，重新组合的一套兼容 <a href="https://developers.weixin.qq.com/miniprogram/dev/api/" target="_blank" rel="noopener">mini-app</a>的一套完整生命周期</p>
+<p><strong> 注意点 </strong></p>
+<ol>
+<li>在小程序的 onReady 后，才会去出发 mounted 的生命周期</li>
+<li>如果每次进入页面都要重新请求数据，建议使用 onShow 来请求数据，但是用户体验不太好, 如果只需要在第一次进入页面时请求数据，随后的数据都不改变，应该使用 mounted，不必要频繁的去请求接口、刷新页面。 3.官方文档上建议使用 Vue 的生命周期函数</li>
+<li>小程序的 <code>onPullDownRefresh</code> 能够检测到页面下拉动作，可以用来实现上拉刷新的操作， 需要搭配 <code>stopPullDownRefresh</code> 来使用</li>
+<li><code>onReachBottom</code> 页面上拉触底事件的处理函数，</li>
+</ol>
+<h4 id="mpvue-暂时不能使用的语法"><a href="#mpvue-暂时不能使用的语法" class="headerlink" title="mpvue 暂时不能使用的语法"></a>mpvue 暂时不能使用的语法</h4><ol>
+<li>不支持 <code>纯-HTML</code> ，小程序不支持所有的 DOM 和/BOM 操作，<code>v-html</code> 的语法是不能用的</li>
+<li>尽量不要在代码的双花括号中处理数据，例如：三元判断，字符处理等等的，<code>compouted</code> 是更好的选择</li>
+<li>在列表循环渲染时： 一定要牢记，千万不要在嵌套的 for 循环中使用相同的 index</li>
+</ol>
+<pre><code class="language-js">&lt;ul v-for=&quot;(card, index) in list&quot;&gt;
+        &lt;li v-for=&quot;(item, itemIndex) in card&quot;&gt;
+            {{item.value}}
+        &lt;/li&gt;
+    &lt;/ul&gt;
+</code></pre>
+<ol start="4">
+<li>事件修饰符： <code>.stop</code> 能处理一些预料之外的情况</li>
+<li>不支持在组件引用时，在组件上定义原生的事件（click），并且 class 和 style 等样式属性也不会生效，解决样式的问题： 写在内部顶级元素上，不要使用 scoped 来限制，可以加一个顶级 class 来防止 class 样式外泄</li>
+</ol>
+<!-- ### 小程序的登陆逻辑
+
+> 现如今的小程序已经不在支持强制登陆，而是需要用户点击登陆按钮之后才能获取登陆权限，为了防止每次登陆的时候都会弹出一个默认的弹出框，仅仅是在首次登陆的时候弹出授权框，提升用户体验。
+
+ ** 暂时的实现逻辑： **
+
+- 首次登陆： 去拿用户的 `code` 之后，发送 `code` 给后台换取 `session_key、unionid`, `openid，` 这个请求的过程一般是在打开登陆界面的时候已经调用了（此时已经取得了 `session_key`），当用户点击登陆的时候才会去调取登陆接口，拿获得 `session` 去换取用户信息。
+  此时还拿到了 `token`，用于用户以后的登陆，作为登陆的另外一个依据
+- 二次登陆： 静默登陆，拿第一次返回的数据进行登陆，不再使微信打开获取登陆权限的弹窗
+
+```js
+// HTML
+ <button class="center-flex btn wx-btn" hover-class="opacity" type="primary" open-type="getPhoneNumber" @getphonenumber="getphonenumber">
+      <img src="/static/images/wechat.png" class="wx-icon">
+      <div class="wx-text">微信手机号登陆</div>  为了获取权限
+    </button>
+  <button @click="toBind" hover-class="opacity" class="center-flex btn phone-btn">手机验证码登陆</button>
+
+  // js
+  import { login, phoneLogin } from '@/utils/login'
+  import { redirectBack, getCurrentOptions } from '@/utils'
+  import authority from '@/utils/authority'
+
+  export default {
+    methods: {
+      login() {
+        authority.clear() //登陆前清除用户信息
+        login()
+      },
+      toBind() {
+        const { back } = getCurrentOptions()  // 手动输入手机号 跳转到另一个登陆页面
+        wx.navigateTo({
+          url: `/pages/bind/main?back=${back}`
+        })
+      },
+      getphonenumber(e) {
+        const { encryptedData, iv } = e.target  // 判断是否包含特殊的数据，通俗来说用户是否同意了登陆权限
+        if (!encryptedData) {
+          return this.toBind()
+        } else {
+          phoneLogin({
+            encrypted_data: encryptedData,
+            iv
+          }).then(() => {
+            wx.showToast({
+              title: '登陆成功'
+            })
+            redirectBack()  // 返回前一个需要登陆的页面
+          }).catch((e) => {
+            console.error(e)
+            this.toBind()
+          })
+        }
+      }
+    },
+    onShow() {
+      this.login()
+    }
+
+``` -->
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#主要特点"><span class="toc-text">主要特点</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#生命周期"><span class="toc-text">生命周期</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#mpvue-暂时不能使用的语法"><span class="toc-text">mpvue 暂时不能使用的语法</span></a></li></ol></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2018-11-20-mpvue/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/小程序/"><i class="fa fa-tags"></i>小程序</a>
+    
+    <a href="/tags/前端框架/"><i class="fa fa-tags"></i>前端框架</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2018-11-25-minApp/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2018-11-07-require-and-import/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2018-11-25-minApp/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2018-11-07-require-and-import/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

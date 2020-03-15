@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>webpack前进之路 | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="webpack 学习笔记最后更改日期：2019 年 06 月 4 日">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2018-11-06
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/webpack/"><i class="fa fa-bookmark"></i>webpack</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    webpack前进之路
+  </h1>
+  
+  <article class="passage-article">
+    <p><code>webpack</code> 学习笔记，参考了官网和很多的文章，由于当时没有及时记录，参考的文章就不一一列出了</p>
+<h1 id="webpack-学习之路"><a href="#webpack-学习之路" class="headerlink" title="webpack 学习之路"></a>webpack 学习之路</h1><h2 id="css"><a href="#css" class="headerlink" title="css"></a>css</h2><p><code>Webpack</code> 把所有的文件都都当做模块处理，<code>JavaScript</code> 代码，<code>CSS</code> 和 <code>fonts</code> 以及图片等等通过合适的 <code>loader</code> 都可以被处理。<br><code>css</code> 有两个工具处理样式表，<code>css-loader</code> 和 <code>style-loader</code>, <code>css-loader</code>能够使用类似<code>@import</code> 和 <code>url(...)</code>的方法实现<code>require()</code>的功能，<code>style-loader</code>将所有的计算后的样式加入页面中，二者组合在一起使你能够把样式表嵌入 webpack 打包后的 JS 文件中。<br><strong>打包 <code>vue</code> 文件时需要使用 <code>vue-style-loader</code></strong></p>
+<pre><code class="language-js">// 简单的css打包配置
+module: {
+  rules: [
+    {
+      test: /\.css$/,
+      use: [
+        {
+          loader: &#39;style-loader&#39;
+        },
+        {
+          loader: &#39;css-loader&#39;,
+          options: {
+            modules: true, // 指定启用css modules
+            localIdentName: &#39;[name]__[local]--[hash:base64:5]&#39; // 指定css的类名格式,防止全局类名的污染
+          }
+        }
+      ]
+    }
+  ]
+}
+</code></pre>
+<p><strong>css 与处理器</strong></p>
+<blockquote>
+<p>css 处理 loaders: 从下往上的进行处理 postcss-loader =&gt; css-loader =&gt; style-loader</p>
+</blockquote>
+<ul>
+<li>Less loader / Sass loader</li>
+<li>Style loader</li>
+<li>PostCSS</li>
+</ul>
+<pre><code class="language-js">rules: [
+  {
+    test: /\.css$/,
+    use: [&#39;style-loader&#39;, &#39;css-loader&#39;, &#39;postcss-loader&#39;]
+  }
+]
+</code></pre>
+<h2 id="babel"><a href="#babel" class="headerlink" title="babel"></a>babel</h2><blockquote>
+<p>将 ES6 等高版本的 JS 转义成浏览器和 node 环境下可以被成功运行的 js 代码</p>
+</blockquote>
+<pre><code class="language-shell"> npm install babel-cli -g //全局安装
+ pwd（li） // 看一下当前的环境/文件下包含的目录（防止进错目录了，最好确认一下比较稳妥）
+ npm init // 初始化项目
+ npm install babel-cli --save-dev //本地安装（当前文件夹或者环境中安装）
+</code></pre>
+<h2 id="babel-环境设置"><a href="#babel-环境设置" class="headerlink" title="babel 环境设置"></a>babel 环境设置</h2><pre><code class="language-js">{
+    &#39;presets&#39;: [&#39;es2015&#39;], //预置配置， 项目的依赖和最后输出的结果
+    &#39;plugins&#39;: []  //插件
+}
+bable --watch src -d build //编译后热更新
+</code></pre>
+<h2 id="browser-sync"><a href="#browser-sync" class="headerlink" title="browser-sync"></a>browser-sync</h2><p>简单的浏览器同步测试工具（起一个服务）</p>
+<pre><code class="language-js"> browser-sync start --server
+</code></pre>
+<h2 id="browserify-打包"><a href="#browserify-打包" class="headerlink" title="browserify 打包"></a>browserify 打包</h2><blockquote>
+<p>node 在网页上三种 js 规范： commonjs \ amd \cmd</p>
+</blockquote>
+<ol>
+<li><code>commonjs</code>: 基于后台的规范（系统架构、系统自动化），模块化定义，允许把 js 代码抽离出来，形成一个单独的文件。特点：同步，加载完成后，但是在浏览器中会导致浏览器假死的状况（网速慢，资源不存在等）</li>
+<li><code>amd</code>:异步加载，成功和失败都有一个返回值，加载 css 后再引入模块</li>
+<li><code>cmd</code>:异步加载-按需加载</li>
+</ol>
+<h3 id="webpack-核心概念"><a href="#webpack-核心概念" class="headerlink" title="webpack 核心概念"></a>webpack 核心概念</h3><p>本质上： 静态模块打包器</p>
+<ul>
+<li>入口（entry）：内部依赖图的开始，也可以说就是需要被打包的目录</li>
+<li>输出（output）： 输出打包完成的文件，默认文件为 <code>./dist</code>, 主输出文件默认为 <code>./dist/main.js</code></li>
+<li>loader: 够让 webpack 处理那些非 JavaScript 文件，并且先将它们转换为有效模块，然后添加到依赖中</li>
+<li>plugins: 打包优化、资源管理和注入环境变量</li>
+<li>mode: dev、production 和 none</li>
+</ul>
+<h3 id="入口"><a href="#入口" class="headerlink" title="入口"></a>入口</h3><p>用法： <code>entry: string| Array&lt;string&gt;</code><br>使用场景：</p>
+<ol>
+<li>分离应用程序(app)和第三方库（vendor）入口</li>
+</ol>
+<pre><code class="language-js"> entry: {
+    app: &#39;./src/app.js&#39;,
+    vendors: &#39;./src/vendors.js&#39;
+  }
+</code></pre>
+<p>2.多页面应用：设置多个页面入口（但是我们目前的项目都是单页面入口）</p>
+<blockquote>
+<p>对零配置来说，默认入口文件夹为当前工程的根目录 <code>src</code> 文件夹</p>
+</blockquote>
+<h3 id="输出（output）"><a href="#输出（output）" class="headerlink" title="输出（output）"></a>输出（output）</h3><p>注意点： 虽然可以存在多个 <code>入口</code> 但是只能指定一个 <code>输出</code> 配置，输出 <code>path</code> 必须是一个绝对路径，它是 <a href="http://nodejs.cn/api/path.html" target="_blank" rel="noopener">Node.js</a> 的一个核心模块。称之为路径模块，用于操作文件路径。</p>
+<pre><code class="language-js">   // 简单用法
+   output: {
+   filename: &#39;bundle.js&#39;, //[name].js
+   path: &#39;/home/proj/public/assets&#39; // _dirname + &#39;./dist&#39;
+ }
+ // 将单独的 `bundle.js` 问价输出到指定目录中
+</code></pre>
+<h3 id="生成-Source-Maps-调试"><a href="#生成-Source-Maps-调试" class="headerlink" title="生成 Source Maps 调试"></a>生成 Source Maps 调试</h3><p>在 webpack 的配置文件中配置 source maps，需要配置 <code>devtool</code>，它有四种不同的配置选项:</p>
+<ol>
+<li>source-map 生成一个完整且功能完全的文件，不压缩</li>
+<li>cheap-module-source-map 在一个单独的文件中生成一个不带  映射的 map，调试不能对应到具体的列</li>
+<li>eval-source-map 使用 eval 打包源文件模块，在同一个文件中生成干净的完整的 <code>source map</code>， 在开发阶段这是一个非常好的选项，在生产阶段则一定不要启用这个选项</li>
+<li>cheap-module-eval-source-map 这是在打包文件时最快的生成 source map 的方法，生成的 Source Map 会和打包后的 JavaScript 文件同行显示，没有列映射</li>
+</ol>
+<h3 id="热更新"><a href="#热更新" class="headerlink" title="热更新"></a>热更新</h3><pre><code class="language-js">npm install --save-dev webpack-dev-server
+</code></pre>
+<blockquote>
+<p>配置</p>
+</blockquote>
+<pre><code class="language-js">devServer: {
+    contentBase: &quot;./dist&quot;,//本地服务器所加载的页面所在的目录
+    historyApiFallback: true,//不跳转
+    inline: true,  //实时刷新
+    port: 8080,   // 端口号： 默认8080
+    host: &#39;0.0.0.0&#39;,
+    openPage: &#39;&#39;,
+    useLocalIp: true,
+    noInfo: false,
+    stats: &#39;minimal&#39;,
+    open: false,
+    proxy: {}
+  }
+</code></pre>
+<h3 id="loaders"><a href="#loaders" class="headerlink" title="loaders"></a>loaders</h3><p>主要用于对模块的源代码进行转换。</p>
+<blockquote>
+<p>在 webpack 打包中,会对入口文件的直接依赖或者间接依赖进行解析,但是 webpack 只能解析某些文件(比如 <code>.js</code> 结尾的文件)在 4.0 之后 <code>.txt</code> 、 <code>.json</code> 文件都能支持解析。而 <code>loader</code> 做的事情就是把其它类型的所有文件转换为 <code>webpack</code> 能够处理的模块。然后你就可以利用 <code>webpack</code> 的打包能力，对它们进行处理。</p>
+</blockquote>
+<p><strong>loaders 的配置具体包括这几个方面</strong></p>
+<ul>
+<li><code>test</code>: 一个用以匹配 loaders 所处理文件的拓展名的正则表达式（必须）</li>
+<li><code>loader</code>: loader 的名称</li>
+<li><code>include/exclude</code>: 手动添加必须处理的文件（文件夹）或屏蔽不需要处理的文件（文件夹）（可选）；</li>
+<li><code>query</code>: 为 loaders 提供额外的设置选项（可选）</li>
+</ul>
+<blockquote>
+<p>简单的使用方法： 在项目中添加了一个图片<br>因为 <code>webpack</code> 并不支持对图片的解析,需要配置相应的 loader 做转换处理为 <code>webpack</code> 打包的文件格式, webpack 能够解析任何 import 导入的模块，比如.css, .jpg 文件等。</p>
+</blockquote>
+<pre><code class="language-js">const config = {
+  module: {
+    rules: [
+      {test: /\.jpeg$/, use: &#39;url-loader&#39;}
+      //所有.jpg格式的图片都会被转化, use: 解析模块对应的解析器(loader)
+  }
+}
+</code></pre>
+<h3 id="插件-plugins"><a href="#插件-plugins" class="headerlink" title="插件(plugins)"></a>插件(plugins)</h3><p>插件目的在于解决 <code>loader</code> 无法实现的其他事。</p>
+<blockquote>
+<p>loader: 解析默写特定的文件， plugins： 几乎所有的自动化操作都通过插件来完成</p>
+</blockquote>
+<p>由于插件可以携带参数/选项，必须在 <code>webpack</code> 配置中，向 <code>plugins</code> 属性传入 <code>new</code> 实例。</p>
+<pre><code class="language-js">plugins: [
+  new webpack.optimize.UglifyJsPlugin(),
+  new HtmlWebpackPlugin({ template: &#39;./src/index.html&#39; }) //自动引用你打包后的JS文件的新index.html
+  new webpack.HotModuleReplacementPlugin()//热加载插件
+]
+</code></pre>
+<h3 id="配置-configuration"><a href="#配置-configuration" class="headerlink" title="配置(configuration)"></a>配置(configuration)</h3><blockquote>
+<p>plugin 和 loader 的区别是，loader 是在 import 时根据不同的文件名，匹配不同的 loader 对这个文件做处理，而 plugin, 关注的不是文件的格式，而是在编译的各个阶段，会触发不同的事件，让你可以干预每个编译阶段。</p>
+</blockquote>
+<p>webpack 的配置文件，是导出一个对象的 JavaScript 文件。此对象，由 webpack 根据对象定义的属性进行解析。<br>如果 webpack.config.js 存在，则 webpack 命令将默认选择使用它。但是在生产环境和开发环境中所需要配置的 webpack 是不一致的，所以现在将 webpack 的配置更改为一个公用文件和两个环境文件，<code>webpack.common.js</code>、<code>webpack.dev.js</code>和 <code>webpack.prod.js</code>，使用<code>webpack-merge</code>将不同的配置结合在一起。</p>
+<pre><code class="language-js">const merge = require(&#39;webpack-merge&#39;)
+const common = require(&#39;./webpack.common&#39;)
+
+module.exports = merge(common, {
+  mode: &#39;development&#39;,
+  devtool: &#39;inline-source-map&#39;,
+  devServer: {
+    contentBase: &#39;./dist&#39;
+  }
+})
+</code></pre>
+<h3 id="模块-modules"><a href="#模块-modules" class="headerlink" title="模块(modules)"></a>模块(modules)</h3><h3 id="项目常用配置"><a href="#项目常用配置" class="headerlink" title="项目常用配置"></a>项目常用配置</h3><ul>
+<li>设置静态资源的 url 路径前缀</li>
+<li>各个页面分开打包</li>
+<li>配置 favicon</li>
+<li>代码中插入环境变量</li>
+<li>简化 import 路径</li>
+<li>使用 postcss 的插件 autoprefixer 自动创建 css 的 vendor prefixes</li>
+</ul>
+<h3 id="设置静态资源的-URL-路径前缀"><a href="#设置静态资源的-URL-路径前缀" class="headerlink" title="设置静态资源的 URL 路径前缀"></a>设置静态资源的 URL 路径前缀</h3><blockquote>
+<p>一般我们的项目开发环境中，我们的资源文件都是在根目录中，8080/index.js，但是在生产环境中，需要考虑到缓存控制和 CDN，一版会给 url 加一个前缀： 8080/m/index.js</p>
+</blockquote>
+<pre><code class="language-js">{
+  output: {
+    publicPath: &#39;/m/&#39;
+  }
+}
+
+// webpack配置
+{
+  output: {
+    /*
+    代码中引用的文件（js、css、图片等）会根据配置合并为一个或多个包，我们称一个包为 chunk。
+    每个 chunk 包含多个 modules。无论是否是 js，webpack 都将引入的文件视为一个 module。
+    chunkFilename 用来配置这个 chunk 输出的文件名。
+
+    [chunkhash]：这个 chunk 的 hash 值，文件发生变化时该值也会变。使用 [chunkhash] 作为文件名可以防止浏览器读取旧的缓存文件。
+
+    还有一个占位符 [id]，编译时每个 chunk 会有一个id。
+    我们在这里不使用它，因为这个 id 是个递增的数字，增加或减少一个chunk，都可能导致其他 chunk 的 id 发生改变，导致缓存失效。
+    */
+    chunkFilename: &#39;[id].[chunkhash].js&#39;,
+  }
+}
+</code></pre>
+<h3 id="各个页面分开打包"><a href="#各个页面分开打包" class="headerlink" title="各个页面分开打包"></a>各个页面分开打包</h3><p>应用路由时可以按需加载，使用 async/await 配合<code>import</code>使用</p>
+<pre><code class="language-js">import Test = () =&gt; import(&#39;@/views/test&#39;)
+</code></pre>
+<h3 id="配置-favicon"><a href="#配置-favicon" class="headerlink" title="配置 favicon"></a>配置 favicon</h3><blockquote>
+<p>网页图标： 在 src 目录中放一张 favicon.png，然后 src/index.html 中插入</p>
+</blockquote>
+<pre><code class="language-html">&lt;link rel=&quot;icon&quot; type=&quot;image/png&quot; href=&quot;favicon.png&quot; /&gt;
+</code></pre>
+<pre><code class="language-js">{
+  module: {
+    rules: [
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: &#39;html-loader&#39;,
+            options: {
+              /*
+              html-loader 接受 attrs 参数，表示什么标签的什么属性需要调用 webpack 的 loader 进行打包。
+              比如 &lt;img&gt; 标签的 src 属性，webpack 会把 &lt;img&gt; 引用的图片打包，然后 src 的属性值替换为打包后的路径。
+              使用什么 loader 代码，同样是在 module.rules 定义中使用匹配的规则。
+              如果 html-loader 不指定 attrs 参数，默认值是 img:src, 意味着会默认打包 &lt;img&gt; 标签的图片。
+              这里我们加上 &lt;link&gt; 标签的 href 属性，用来打包入口 index.html 引入的 favicon.png 文件。
+              */
+              attrs: [&#39;img:src&#39;, &#39;link:href&#39;]
+            }
+          }
+        ]
+      },
+
+      {
+        /*
+        匹配 favicon.png
+        上面的 html-loader 会把入口 index.html 引用的 favicon.png 图标文件解析出来进行打包
+        打包规则就按照这里指定的 loader 执行
+        */
+        test: /favicon\.png$/,
+
+        use: [
+          {
+            // 使用 file-loader
+            loader: &#39;file-loader&#39;,
+            options: {
+              /*
+              name：指定文件输出名
+              [hash] 为源文件的hash值，[ext] 为后缀。
+              */
+              name: &#39;[hash].[ext]&#39;
+            }
+          }
+        ]
+      },
+
+      // 图片文件的加载配置增加一个 exclude 参数
+      {
+        test: /\.(png|jpg|jpeg|gif|eot|ttf|woff|woff2|svg|svgz)(\?.+)?$/,
+
+        // 排除 favicon.png, 因为它已经由上面的 loader 处理了。如果不排除掉，它会被这个 loader 再处理一遍
+        exclude: /favicon\.png$/,
+
+        use: [
+          {
+            loader: &#39;url-loader&#39;,
+            options: {
+              limit: 10000
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+</code></pre>
+<h2 id="一份基本的配置"><a href="#一份基本的配置" class="headerlink" title="一份基本的配置"></a>一份基本的配置</h2><pre><code class="language-js">// build/webpack.config.js
+const path = require(&#39;path&#39;)
+const webpack = require(&#39;webpack&#39;)
+const HtmlWebpackPlugin = require(&#39;html-webpack-plugin&#39;)
+const VueLoaderPlugin = require(&#39;vue-loader/lib/plugin&#39;)
+const MiniCssExtractPlugin = require(&#39;mini-css-extract-plugin&#39;)
+const CopyWebpackPlugin = require(&#39;copy-webpack-plugin&#39;)
+const WebpackBar = require(&#39;webpackbar&#39;)
+const { CleanWebpackPlugin } = require(&#39;clean-webpack-plugin&#39;)
+
+const isDev = process.env.NODE_ENV !== &#39;production&#39;
+function resolve(dir) {
+  return path.join(__dirname, &#39;../&#39;, dir)
+}
+
+module.exports = {
+  // entry: {
+  //   // 配置入口文件
+  //   main: resolve(&#39;src&#39;)
+  // },
+  output: {
+    path: resolve(&#39;dist&#39;),
+    filename: &#39;js/[name].[hash].js&#39;,
+    chunkFilename: &#39;js/[name].[hash].js&#39;,
+    publicPath: &#39;/&#39;
+  },
+  resolve: {
+    alias: {
+      vue$: &#39;vue/dist/vue.runtime.esm.js&#39;,
+      &#39;@&#39;: resolve(&#39;src&#39;)
+    },
+    extensions: [&#39;.js&#39;, &#39;.vue&#39;, &#39;.json&#39;]
+  },
+  module: {
+    rules: [
+      {
+        test: /\.vue$/,
+        use: [
+          {
+            loader: &#39;cache-loader&#39;
+          },
+          {
+            loader: &#39;vue-loader&#39;,
+            options: {
+              compilerOptions: {
+                preserveWhitespace: false
+              }
+            }
+          }
+        ]
+      },
+      {
+        test: /\.js?$/,
+        exclude: /node_modules/,
+        loader: &#39;babel-loader&#39;
+      },
+      {
+        test: /\.(jpe?g|png|gif)$/,
+        use: [
+          {
+            loader: &#39;url-loader&#39;,
+            options: {
+              limit: 4096,
+              fallback: {
+                loader: &#39;file-loader&#39;,
+                options: {
+                  name: &#39;images/[name].[ext]?[hash]&#39;
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)(\?.*)?$/,
+        use: [
+          {
+            loader: &#39;url-loader&#39;,
+            options: {
+              limit: 4096,
+              fallback: {
+                loader: &#39;file-loader&#39;,
+                options: {
+                  name: &#39;media/[name].[ext]?[hash]&#39;
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/i,
+        use: [
+          {
+            loader: &#39;url-loader&#39;,
+            options: {
+              limit: 4096,
+              fallback: {
+                loader: &#39;file-loader&#39;,
+                options: {
+                  name: &#39;fonts/[name].[ext]?[hash]&#39;
+                }
+              }
+            }
+          }
+        ]
+      },
+      {
+        test: /\.(scss|css)$/,
+        use: [
+          !isDev ? MiniCssExtractPlugin.loader : &#39;vue-style-loader&#39;,
+          &#39;css-loader&#39;,
+          &#39;sass-loader&#39;
+        ]
+      }
+    ]
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new VueLoaderPlugin(),
+    new WebpackBar(),
+    new webpack.DefinePlugin({
+      &#39;process.env&#39;: {
+        name: JSON.stringify(process.env.npm_package_name),
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV || &#39;development&#39;)
+      }
+    }),
+    new CopyWebpackPlugin([
+      {
+        from: resolve(&#39;public&#39;),
+        to: &#39;&#39;,
+        ignore: [&#39;.*&#39;]
+      }
+    ]),
+    new HtmlWebpackPlugin({
+      template: resolve(&#39;public/index.html&#39;)
+    }),
+    new webpack.NamedModulesPlugin()
+  ]
+}
+</code></pre>
+<pre><code class="language-js">// build/webpack.dev.js
+const merge = require(&#39;webpack-merge&#39;)
+const webpackConfig = require(&#39;./webpack.config&#39;)
+module.exports = merge(webpackConfig, {
+  mode: &#39;development&#39;,
+  devtool: &#39;source-map&#39;,
+  devServer: {
+    port: 8888,
+    host: &#39;0.0.0.0&#39;,
+    openPage: &#39;&#39;,
+    useLocalIp: true,
+    historyApiFallback: true,
+    noInfo: false,
+    stats: &#39;minimal&#39;,
+    open: false,
+    proxy: {}
+  },
+  plugins: []
+})
+</code></pre>
+<pre><code class="language-js">const merge = require(&#39;webpack-merge&#39;)
+const webpackConfig = require(&#39;./webpack.config&#39;)
+const MiniCssExtractPlugin = require(&#39;mini-css-extract-plugin&#39;)
+
+module.exports = merge(webpackConfig, {
+  mode: &#39;production&#39;,
+  devtool: &#39;#source-map&#39;,
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendors: {
+          name: &#39;chunk-vendors&#39;,
+          test: /[\\\/]node_modules[\\\/]/,
+          priority: -10,
+          chunks: &#39;initial&#39;
+        },
+        common: {
+          name: &#39;chunk-common&#39;,
+          minChunks: 2,
+          priority: -20,
+          chunks: &#39;initial&#39;,
+          reuseExistingChunk: true
+        }
+      }
+    }
+  },
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: &#39;css/[name].[hash].css&#39;,
+      chunkFilename: &#39;css/[name].[hash].css&#39;
+    })
+  ]
+})
+</code></pre>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#webpack-学习之路"><span class="toc-text">webpack 学习之路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#css"><span class="toc-text">css</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#babel"><span class="toc-text">babel</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#babel-环境设置"><span class="toc-text">babel 环境设置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#browser-sync"><span class="toc-text">browser-sync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#browserify-打包"><span class="toc-text">browserify 打包</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#webpack-核心概念"><span class="toc-text">webpack 核心概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#入口"><span class="toc-text">入口</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#输出（output）"><span class="toc-text">输出（output）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#生成-Source-Maps-调试"><span class="toc-text">生成 Source Maps 调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#热更新"><span class="toc-text">热更新</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#loaders"><span class="toc-text">loaders</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#插件-plugins"><span class="toc-text">插件(plugins)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-configuration"><span class="toc-text">配置(configuration)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模块-modules"><span class="toc-text">模块(modules)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#项目常用配置"><span class="toc-text">项目常用配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#设置静态资源的-URL-路径前缀"><span class="toc-text">设置静态资源的 URL 路径前缀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#各个页面分开打包"><span class="toc-text">各个页面分开打包</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#配置-favicon"><span class="toc-text">配置 favicon</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#一份基本的配置"><span class="toc-text">一份基本的配置</span></a></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2018-10-20-webpack-learning/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/JavaScript/"><i class="fa fa-tags"></i>JavaScript</a>
+    
+    <a href="/tags/webpack/"><i class="fa fa-tags"></i>webpack</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2018-11-07-require-and-import/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2018-11-02-cropperJs/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2018-11-07-require-and-import/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2018-11-02-cropperJs/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

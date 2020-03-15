@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>移动端适配 | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="移动端适配最后更新时间 2019-03-14">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-03-14
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/移动端/"><i class="fa fa-bookmark"></i>移动端</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    移动端适配
+  </h1>
+  
+  <article class="passage-article">
+    <h1 id="viewport"><a href="#viewport" class="headerlink" title="viewport"></a>viewport</h1><ul>
+<li>PC 端： 浏览器可视区的大小</li>
+<li>移动端，绝大多数情况下 viewport 都大于浏览器可视区，保证 PC 页面在移动浏览器上面的可视性</li>
+</ul>
+<p>通过在 meta 标签中配置<code>viewport</code>特性，定义适口的各种行为</p>
+<p>主要参考资料 <a href="https://segmentfault.com/a/1190000004978598" target="_blank" rel="noopener">viewport 详解</a> <a href="https://juejin.im/post/5c0dd7ac6fb9a049c43d7edc#comment" target="_blank" rel="noopener">移动端适配总结</a></p>
+<h2 id="view-详解"><a href="#view-详解" class="headerlink" title="view 详解"></a>view 详解</h2><ol>
+<li><p>layout viewport<br>虚拟的布局入口，大于实际屏幕， 元素的宽度继承于 <code>layout viewport</code>，用于保证网站的外观特性与桌面浏览器一样。<code>layout viewport</code> 到底多宽，每个浏览器不同。Android 和 iPhone 基本上都为 980px，可以通过 <code>document.documentElement.clientWidth</code> 获取</p>
+</li>
+<li><p>visual viewport<br>用来承载 <code>layout viewport</code> 的视口，当前显示在屏幕上的页面，即浏览器可视区域的宽度，<code>visual viewport</code> 的尺寸不会是一个固定的值，甚至每款设备都可能不同，所以无法进行任何修改和设置，几种常见设备的 visual viewport 尺寸：</p>
+<ul>
+<li>iPhone4~iPhone5S: 320*480px</li>
+<li>iPhone6~iPhone6S: 375*627px</li>
+<li>iPhone6 Plus~iPhone6S Plus: 414*736px</li>
+</ul>
+</li>
+<li><p>ideal viewport<br>它类似于布局视口，但宽度和视觉视口相同，这就是完美视口 <code>ideal viewport</code> ，为浏览器定义的可完美适配移动端的理想 <code>viewport</code>，固定不变，可以认为是设备视口宽度。比如 <code>iphone7</code> 为 375px, <code>iphone7p</code> 为 414px。，用户不用缩放和拖动网页就能够很好的进行网页浏览。而完美视口也是通过 <code>viewport meta</code> 的某种设置来达到。</p>
+</li>
+</ol>
+<h2 id="适配"><a href="#适配" class="headerlink" title="适配"></a>适配</h2><pre><code class="language-html">&lt;meta
+  name=&quot;viewport&quot;
+  content=&quot;width=device-width,initial-scale=1,user-scale=no&quot;
+/&gt;
+</code></pre>
+<ul>
+<li><p><code>width</code> 用来定义 <code>layout viewport</code> 的宽度，如果不指定该属性（或者移除 <code>viewport meta</code>标签），则 <code>layout viewport</code> 宽度为默认值。</p>
+</li>
+<li><p><code>width=device-width</code> 此时的<code>layout viewport</code>将成为<code>ideal viewport</code>，因为<code>layout viewport</code>宽度与设备视觉视口宽度一致了， 这是移动端适配不可或缺的步骤</p>
+</li>
+<li><p><code>initial-scale</code> 设置页面的初始缩放值，并且这个初始缩放值是相对于 <code>ideal viewport</code> 缩放的，最终得到的结果不仅会决定 <code>visual viewport</code>，还会影响到 <code>layout viewport</code></p>
+</li>
+<li><p><code>user-scalable</code> 是否允许用户进行缩放的设置</p>
+</li>
+</ul>
+<h2 id="设备像素比-dpr-与-rem-的适配方案"><a href="#设备像素比-dpr-与-rem-的适配方案" class="headerlink" title="设备像素比 dpr 与 rem 的适配方案"></a>设备像素比 dpr 与 rem 的适配方案</h2><blockquote>
+<p>rem 是相对于根元素 html 的 font-size 来做计算。通常在页面初始化时加载时通过对 document.documentElement.style.fontSize 设置来实现。</p>
+</blockquote>
+<p>最后更新日期 2019-03-14</p>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#viewport"><span class="toc-text">viewport</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#view-详解"><span class="toc-text">view 详解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#适配"><span class="toc-text">适配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#设备像素比-dpr-与-rem-的适配方案"><span class="toc-text">设备像素比 dpr 与 rem 的适配方案</span></a></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2019-03-14-移动端适配/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/H5/"><i class="fa fa-tags"></i>H5</a>
+    
+    <a href="/tags/移动端/"><i class="fa fa-tags"></i>移动端</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2019-04-05-promis封装400电话API/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2019-03-11-charles/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2019-04-05-promis封装400电话API/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2019-03-11-charles/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

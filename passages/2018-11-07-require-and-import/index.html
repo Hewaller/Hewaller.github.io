@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>前端模块化 | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="require 和 import最后更新日期 2018 年 11 月 07 日">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2018-11-07
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/前端/"><i class="fa fa-bookmark"></i>前端</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    前端模块化
+  </h1>
+  
+  <article class="passage-article">
+    <h1 id="模块化"><a href="#模块化" class="headerlink" title="模块化"></a>模块化</h1><blockquote>
+<p>定义： 模块是自动运行在严格模式下并且没有那么办法退出的 <code>JavaScript</code> 代码。 与共享一切框架相反的是，在模块顶部创建的变量不会自动添加到全局共享作用域，而且模块必须导出一些外部代码可以访问的元素（变量或者函数）</p>
+</blockquote>
+<ul>
+<li>模块中 <code>this</code> 的值是 <code>undefined</code></li>
+<li>可以支持导入和导出</li>
+<li>不支持 <code>HTML</code> 格式的注释</li>
+</ul>
+<h2 id="先谈导出"><a href="#先谈导出" class="headerlink" title="先谈导出"></a>先谈导出</h2><p><code>js</code> 中模块导出的关键字 <code>export</code></p>
+<blockquote>
+<p>可以通过 <code>export</code> 将任何变量、函数或类导出</p>
+</blockquote>
+<h3 id="导出的基本用法"><a href="#导出的基本用法" class="headerlink" title="导出的基本用法"></a>导出的基本用法</h3><pre><code class="language-js">let template = &#39;&#39;
+function test() {
+  ...
+}
+// 导出的几种形式
+export template
+export function name() {}
+export {test, template}
+export { test as alias, template};
+export class Test{
+  constructor(...) {
+    ...
+  }
+}
+</code></pre>
+<h3 id="模块的默认值（在学习-node-中了解的）"><a href="#模块的默认值（在学习-node-中了解的）" class="headerlink" title="模块的默认值（在学习 node 中了解的）"></a>模块的默认值（在学习 node 中了解的）</h3><p><strong>通过 <code>default</code> 关键字导出</strong></p>
+<blockquote>
+<p><code>export default</code>: 其实就是语法糖， 好处在于 import 引入的时候可以省去{}</p>
+</blockquote>
+<pre><code class="language-js">// test.js
+// 一个模块中有切只能有一个 `export default`， 后面定义的会覆盖前面的内容
+export default function () {}
+// 引入
+import test from &#39;./test.js&#39;
+test()
+
+// 等同于使用别名导出
+function test () {}
+export {test as default}  //向外界暴露的是test这个变量
+
+//
+import {default as test} from &#39;./test.js&#39;
+test()
+</code></pre>
+<blockquote>
+<p>在 <code>node.js</code> 中， <code>module.exports</code> 提供了一个别名 <code>exports</code>，可以支持导出多个成员<br>借鉴 <a href="https://nodejs.lipengzhou.com/04-module.html#%E4%B8%BA%E4%BB%80%E4%B9%88-exports-xxx-%E4%B8%8D%E8%A1%8C" target="_blank" rel="noopener">基于 Node.js 的服务端开发</a></p>
+</blockquote>
+<pre><code class="language-js">function fn() {
+  // 每个模块内部有一个 module 对象
+  // module 对象中有一个成员 exports 也是一个对象
+  var module = {
+    exports: {}
+  }
+
+  // 模块中同时还有一个成员 exports 等价于 module.exports
+  var exports = module.exports
+
+  console.log(exports === module.exports) // =&gt; true
+
+  // 这样是可以的，因为 exports === module.exports
+  // module.exports.a = 123
+  // exports.b = 456
+
+  // 这里重新赋值不管用，因为模块最后 return 的是 module.exports
+  // exports = function () {
+  // }
+
+  // 这才是正确的方式
+  module.exports = function() {
+    console.log(123)
+  }
+
+  // 最后导出的是 module.exports
+  return module.exports
+}
+
+var ret = fn()
+
+console.log(ret)
+</code></pre>
+<pre><code class="language-js">// 导出单个成员
+module.exports = function(x, y) {
+  return x + y
+}
+// 导出多个
+exports.a = 123
+exports.b = 456
+exports.c = 789
+exports.fn = function() {}
+</code></pre>
+<h2 id="再谈导入-import"><a href="#再谈导入-import" class="headerlink" title="再谈导入 import"></a>再谈导入 <code>import</code></h2><blockquote>
+<p>import 是静态分析，导出的是对象引用</p>
+</blockquote>
+<h3 id="导入的基本用法"><a href="#导入的基本用法" class="headerlink" title="导入的基本用法"></a>导入的基本用法</h3><pre><code class="language-js">import [name] from &#39;....&#39;;
+import * as name from &#39;....&#39;;
+import { export1, export2 as alias } from &#39;....&#39;;
+import defaultExport, { export1, export2} from &#39;....&#39;;
+import defaultExport, * as name from &#39;....&#39;;
+import &#39;....&#39;;
+</code></pre>
+<h2 id="require-模块"><a href="#require-模块" class="headerlink" title="require 模块"></a>require 模块</h2><blockquote>
+<p><code>node</code> 中最重要的思想之一：模块。<code>node</code> 的 <code>module</code> 遵循 <code>CommonJs</code> 规范，<code>requierjs</code> 遵循 <code>AMD</code>，<code>seajs</code> 遵循 <code>CMD</code>，都是使代码风格保持一致的手段</p>
+</blockquote>
+<pre><code class="language-js">// node
+module.exports = {
+  // module.exports 要加上s,但是并不是模块化的规范，只是node的一个私有属性
+  test: function(a) {
+    console.log(a)
+  }
+}
+// 引入
+const a = requier(&#39;./test&#39;)
+a.test(1) // 1
+
+// AMD or CMD
+define(function(require, exports, module) {
+  module.exports = {
+    test: function(a) {
+      console.log(a)
+    }
+  }
+})
+// 引入
+define(function(require, exports, module) {
+  const a = requier(&#39;./test&#39;)
+  a.test(1) // 1
+})
+
+// 区别在于最外层是够使用了define提供的闭包函数
+</code></pre>
+<blockquote>
+<p>区别：<br>import 是编译时加载的,不会添加多余的变量，性能上也较好;require 是代码实际运行是加载的，所以 require 可以在代码的任何地方使用</p>
+</blockquote>
+<pre><code class="language-js">require(&#39;./test.js&#39;)()
+</code></pre>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#模块化"><span class="toc-text">模块化</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#先谈导出"><span class="toc-text">先谈导出</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#导出的基本用法"><span class="toc-text">导出的基本用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#模块的默认值（在学习-node-中了解的）"><span class="toc-text">模块的默认值（在学习 node 中了解的）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#再谈导入-import"><span class="toc-text">再谈导入 import</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#导入的基本用法"><span class="toc-text">导入的基本用法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#require-模块"><span class="toc-text">require 模块</span></a></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2018-11-07-require-and-import/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/JavaScript/"><i class="fa fa-tags"></i>JavaScript</a>
+    
+    <a href="/tags/前端/"><i class="fa fa-tags"></i>前端</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2018-11-20-mpvue/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2018-10-20-webpack-learning/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2018-11-20-mpvue/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2018-10-20-webpack-learning/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

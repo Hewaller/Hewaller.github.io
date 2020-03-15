@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>常见的css布局 | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="列表项布局最后更新时间 2019-01-02">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-01-02
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/css/"><i class="fa fa-bookmark"></i>css</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    常见的css布局
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="FC（渲染区域）"><a href="#FC（渲染区域）" class="headerlink" title="FC（渲染区域）"></a>FC（渲染区域）</h2><p>浏览器中页面有一套渲染规则，它决定了其子元素将如何定位，以及和其他元素的关系和相互作用</p>
+<h3 id="BFC（格式化上下文）"><a href="#BFC（格式化上下文）" class="headerlink" title="BFC（格式化上下文）"></a>BFC（格式化上下文）</h3><p>页面上的一个隔离的渲染区域，容器里面的子元素不会在布局上影响到外面的元素</p>
+<ul>
+<li><code>float</code> 的值不为 <code>none。</code></li>
+<li><code>overflow</code> 的值不为 <code>visible。</code></li>
+<li><code>position</code> 的值不为 <code>relative</code> 和 <code>static。</code></li>
+<li><code>display</code> 的值为 <code>table-cell</code> , <code>table-caption</code>, <code>inline-block</code> 中的任何一个</li>
+</ul>
+<p>实际使用： 页面能够缩放，侧边栏滚动吸顶</p>
+<pre><code class="language-html">&lt;template&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;left&quot;&gt;left&lt;/div&gt;
+    &lt;div class=&quot;right&quot;&gt;
+      &lt;div :class=&quot;{&#39;fixed-aside&#39;:fixed}&quot; class=&quot;box&quot;&gt;fsas&lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+  export default {
+    data() {
+      return {
+        fixed: false
+      }
+    },
+    mounted() {
+      this.listenScroll()
+    },
+    methods: {
+      listenScroll() {
+        window.addEventListener(&#39;scroll&#39;, this.winScroll)
+        console.log(&#39;456&#39;)
+      },
+      winScroll() {
+        const scrollTop = document.documentElement.scrollTop
+        console.log(scrollTop)
+        this.fixed = !!(scrollTop &gt; 80)
+      }
+    }
+  }
+&lt;/script&gt;
+
+&lt;style&gt;
+  .container {
+    width: 1160px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .left {
+    width: 850px;
+    box-sizing: border-box;
+    height: 10000px;
+    background-color: #f8f8f8;
+  }
+  .right {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 290px;
+  }
+  .box {
+    width: 290px;
+    height: 290px;
+    background-color: aquamarine;
+  }
+  .fixed-aside {
+    position: fixed;
+    width: 290px;
+    z-index: 100;
+    transition: top 0.3s;
+  }
+&lt;/style&gt;
+</code></pre>
+<h3 id="IFC-内联格式化上下文"><a href="#IFC-内联格式化上下文" class="headerlink" title="IFC(内联格式化上下文)"></a>IFC(内联格式化上下文)</h3><p>高度：包含行内元素中最高的实际高度（不受到竖直方向的 padding/margin 影响)</p>
+<blockquote>
+<p>IFC 中不会有块级元素，当插入块级元素时（如 p 中插入 div）会产生两个匿名块与 div 分隔开，即产生两个 IFC，每个 IFC 对外表现为块级元素</p>
+</blockquote>
+<h3 id="GFC-网格布局格式化上下文"><a href="#GFC-网格布局格式化上下文" class="headerlink" title="GFC (网格布局格式化上下文)"></a>GFC (网格布局格式化上下文)</h3><p><code>display: grid</code></p>
+<blockquote>
+<p>在网格容器（grid container）上定义网格定义行（grid definition rows）和网格定义列（grid definition columns）属性各在网格项目（grid item）上定义网格行（grid row）和网格列（grid columns）为每一个网格项目（grid item）定义位置和空间。</p>
+</blockquote>
+<h3 id="FFC-自适应格式化上下文"><a href="#FFC-自适应格式化上下文" class="headerlink" title="FFC (自适应格式化上下文)"></a>FFC (自适应格式化上下文)</h3><p><code>display: flex</code> 或者 <code>display: inline-flex</code></p>
+<p>主要使用：</p>
+<ul>
+<li>父容器： justify-content 和 align-items</li>
+<li>子容器： flex 和 align-self</li>
+</ul>
+<pre><code class="language-css">/* 父容器 */
+justify-content: flex-top;
+/* flex-end center space-between space-around */
+align-items: flex-top;
+/* flex-end center baseline stretch */
+flex-wrap: wrap;
+/* wrap换行 nowrap不换行 wrap-reversefan x w w */
+
+/* 子容器: 有弹性，会自动填充剩余空间*/
+flex: none;
+/* flex是多个属性的缩写，允许1-3个值连用 */
+align-self: center;
+</code></pre>
+<h2 id="列表项布局"><a href="#列表项布局" class="headerlink" title="列表项布局"></a>列表项布局</h2><p>使用 <code>last-child()</code> 来控制右边和下边的边距</p>
+<pre><code class="language-html">&lt;div class=&quot;container&quot;&gt;
+  &lt;div class=&quot;item&quot;&gt;宽度已知，最多放三个&lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;宽度已知，最多放三个&lt;/div&gt;
+  &lt;div class=&quot;item&quot;&gt;宽度已知，最多放三个&lt;/div&gt;
+  ...
+&lt;/div&gt;
+
+&lt;style&gt;
+  /* scss code */
+  .container {
+    .item {
+      margin-right: 30px;
+      margin-bottom: 20px;
+
+      &amp;:nth-child(3n) {
+        margin-right: 0;
+      }
+      &amp;:nth-last-child(-n + 3) {
+        margin-bottom: 0;
+      }
+    }
+  }
+&lt;/style&gt;
+</code></pre>
+<h2 id="flex-和-负-margin-布局"><a href="#flex-和-负-margin-布局" class="headerlink" title="flex 和 负 margin 布局"></a>flex 和 负 margin 布局</h2><p>flex 布局的 justify-content 主轴属性来控制元素的间距</p>
+<pre><code class="language-html">&lt;div class=&quot;wrapper&quot;&gt;
+  &lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;item&quot;&gt;两个才能成一行呀&lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;两个才能成一行呀&lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;这三个字&lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;独成一行呀独成一行呀独成一行呀独&lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;两个才能成一行呀&lt;/div&gt;
+    &lt;div class=&quot;item&quot;&gt;四个&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;style&gt;
+  /* scss code */
+  .wrapper {
+    padding: 10px;
+    border: 2px solid rgb(240, 103, 103);
+
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      margin-right: -30px;
+      margin-bottom: -20px;
+
+      .item {
+        margin-right: 30px;
+        margin-bottom: 20px;
+      }
+    }
+  }
+&lt;/style&gt;
+</code></pre>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#FC（渲染区域）"><span class="toc-text">FC（渲染区域）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#BFC（格式化上下文）"><span class="toc-text">BFC（格式化上下文）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IFC-内联格式化上下文"><span class="toc-text">IFC(内联格式化上下文)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#GFC-网格布局格式化上下文"><span class="toc-text">GFC (网格布局格式化上下文)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#FFC-自适应格式化上下文"><span class="toc-text">FFC (自适应格式化上下文)</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#列表项布局"><span class="toc-text">列表项布局</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#flex-和-负-margin-布局"><span class="toc-text">flex 和 负 margin 布局</span></a></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/CSS/2019-01-02-常见的css布局/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/前端/"><i class="fa fa-tags"></i>前端</a>
+    
+    <a href="/tags/css/"><i class="fa fa-tags"></i>css</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2019-01-03-阿里软电话SDK前端/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2018-12-18-Dplay/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2019-01-03-阿里软电话SDK前端/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2018-12-18-Dplay/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

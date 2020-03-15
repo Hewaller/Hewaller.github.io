@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>全局组件和构造组件 | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="结合 element-ui 实现全局组件和构造组件最后更新时间 2019-04-11">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-04-11
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/服务端渲染/"><i class="fa fa-bookmark"></i>服务端渲染</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    全局组件和构造组件
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="自己需要知道自定义组件的一些细节"><a href="#自己需要知道自定义组件的一些细节" class="headerlink" title="自己需要知道自定义组件的一些细节"></a>自己需要知道自定义组件的一些细节</h2><h4 id="data-必须是一个函数"><a href="#data-必须是一个函数" class="headerlink" title="data 必须是一个函数"></a><code>data</code> 必须是一个函数</h4><pre><code class="language-js">data () {
+  return {
+    ......
+  }
+}
+</code></pre>
+<blockquote>
+<p>一个组件的 <code>data</code> 选项必须是一个函数，因此每个实例可以维护一份被返回对象的独立的拷贝，相互之间不会因为组件的复用而影响到其他的实例</p>
+</blockquote>
+<h4 id="全局注册和局部注册"><a href="#全局注册和局部注册" class="headerlink" title="全局注册和局部注册"></a>全局注册和局部注册</h4><pre><code class="language-js">// 注册组件，传入一个扩展过的构造器
+Vue.component(
+  &#39;myComponent&#39;,
+  Vue.extend({
+    /* ... */
+  })
+)
+
+// 注册组件，传入一个选项对象 (自动调用 Vue.extend)
+Vue.component(&#39;my-component&#39;, {
+  /* ... */
+})
+</code></pre>
+<h4 id="Vue-extend-options"><a href="#Vue-extend-options" class="headerlink" title="Vue.extend(options)"></a>Vue.extend(options)</h4><p>使用基础 Vue 构造器，创建一个“子类”</p>
+<h4 id="Vue-nextTick-cb"><a href="#Vue-nextTick-cb" class="headerlink" title="Vue.nextTick(cb)"></a>Vue.nextTick(cb)</h4><p>在下次 <code>DOM</code> 更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的 <code>DOM</code></p>
+<pre><code class="language-js">Vue.nextTick(() =&gt; {...})
+
+// promise
+
+Vue.nextTick().then(() =&gt; {...})
+</code></pre>
+<h2 id="判断是否是服务端还是客户端"><a href="#判断是否是服务端还是客户端" class="headerlink" title="判断是否是服务端还是客户端"></a>判断是否是服务端还是客户端</h2><p><code>Node</code> 和浏览器之间存在许多微小的环境差异，全局化组件需要注册在 <code>window</code> 上，如果在 <code>Node</code> 中，由于 <code>window</code> 不存在，程序会报错，可以使用下面两种方法避免在服务端使用 <code>window</code></p>
+<h3 id="void-0-和-undefined-、-null"><a href="#void-0-和-undefined-、-null" class="headerlink" title="void 0 和 undefined 、 null"></a><code>void 0</code> 和 <code>undefined</code> 、 <code>null</code></h3><blockquote>
+<p><code>undefined</code> 表示未定义, 一般我们可以用全局变量 <code>undefined</code> (就是名为 <code>undefined</code> 的这个变量) 来表示这个值<br>但是 JS 中 <code>undefined</code> 只是一个变量，并不是一个关键字，可以被篡改<br>解决方法： <code>void</code> 可以把任何一个表达式变成 <code>undefined</code> ，一般使用 <code>void 0</code> 来获取 <code>undefined</code>值</p>
+</blockquote>
+<ul>
+<li><code>typeof window === void 0</code><blockquote>
+<p><code>null</code> 是 JS 中的关键字，可以使用 <code>null</code> 变量来获取 <code>null</code> 的值</p>
+</blockquote>
+</li>
+</ul>
+<blockquote>
+<p>使用 <code>typeof</code> 对 <code>window</code> 进行判断，即使 <code>window</code> 不存在， 也不会报错，只会返回 <code>undefined</code><br>使用 <code>typeof</code> 判断 <code>window</code> 是否存在，如果 返回的值是 <code>undefined，</code> 则不会继续后续对 <code>window</code> 的操作和注册全局的组件</p>
+</blockquote>
+<ul>
+<li><code>process.browser</code><blockquote>
+<p>在浏览器中它返回 true，而在 Node 中它返回 false， 也可以用来判断是服务端还是客户端</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="全局化挂载组件"><a href="#全局化挂载组件" class="headerlink" title="全局化挂载组件"></a>全局化挂载组件</h2><ul>
+<li>首先完成一个简单的组件</li>
+</ul>
+<pre><code class="language-html">&lt;!-- SuccessBox.vue --&gt;
+&lt;template&gt;
+  &lt;div class=&quot;success-wrapper center-flex&quot; @click=&quot;close&quot; v-if=&quot;visible&quot;&gt;
+    &lt;div class=&quot;success-container&quot; @click.stop&gt;
+      &lt;div class=&quot;bg-container&quot;&gt;
+        &lt;img src=&quot;../assets/success_icon.png&quot; alt=&quot;&quot; class=&quot;bg-img&quot; /&gt;
+      &lt;/div&gt;
+      &lt;div class=&quot;success-header&quot;&gt;
+        {{data.header}}
+      &lt;/div&gt;
+      &lt;div class=&quot;success-detail&quot; v-for=&quot;(item, key) in data.detail&quot; :key=&quot;key&quot;&gt;
+        {{item}}
+      &lt;/div&gt;
+      &lt;div class=&quot;success-tip&quot; v-if=&quot;data.tip&quot;&gt;
+        {{data.tip}}
+      &lt;/div&gt;
+      &lt;div class=&quot;success-button&quot; @click.stop=&quot;close&quot;&gt;
+        确认
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+  export default {
+    name: &#39;SuccessBox&#39;,
+    props: {},
+    data() {
+      return {
+        visible: true,
+        data: {
+          header: &#39;购买成功&#39;,
+          detail: [&#39;购买成功!&#39;, &#39;请在门店支付订单后进行兑换！&#39;],
+          tip: &#39;&#39;
+        }
+      }
+    },
+    methods: {
+      close() {
+        this.visible = false
+      }
+    }
+  }
+&lt;/script&gt;
+</code></pre>
+<ul>
+<li>挂在到全局对象 <code>window</code> 上</li>
+</ul>
+<pre><code class="language-js">// utils/SuccessBox.js
+
+import Vue from &#39;vue&#39;
+const SuccessBox = Vue.extend(require(&#39;@/common/successBox.vue&#39;).default)
+
+let instance
+
+export default {
+  show: (data = {}, callback) =&gt; {
+    if (typeof document === &#39;undefined&#39;) return // 服务端渲染
+    // 挂载到全局对象上
+    if (!instance) {
+      instance = new SuccessBox({
+        el: document.createElement(&#39;div&#39;)
+      })
+      document.body.appendChild(instance.$el)
+    }
+    if (callback) instance.callback = callback
+    instance.data = { ...instance.data, ...data }
+    Vue.nextTick(() =&gt; {
+      instance.visible = true
+    })
+  }
+}
+</code></pre>
+<ul>
+<li>挂载到全局</li>
+</ul>
+<pre><code class="language-js">//  nuxt.config.js
+  plugins: [
+    { src: &#39;~plugins/vue-awesome-swiper.js&#39;, ssr: false }, // swiper
+    &#39;~plugins/$SuccessBox.js&#39;
+  ],
+</code></pre>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#自己需要知道自定义组件的一些细节"><span class="toc-text">自己需要知道自定义组件的一些细节</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#data-必须是一个函数"><span class="toc-text">data 必须是一个函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#全局注册和局部注册"><span class="toc-text">全局注册和局部注册</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Vue-extend-options"><span class="toc-text">Vue.extend(options)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Vue-nextTick-cb"><span class="toc-text">Vue.nextTick(cb)</span></a></li></ol></li></ol><li class="toc-item toc-level-2"><a class="toc-link" href="#判断是否是服务端还是客户端"><span class="toc-text">判断是否是服务端还是客户端</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#void-0-和-undefined-、-null"><span class="toc-text">void 0 和 undefined 、 null</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#全局化挂载组件"><span class="toc-text">全局化挂载组件</span></a></li>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2019-04-11全局挂载公用组件/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/nuxt/"><i class="fa fa-tags"></i>nuxt</a>
+    
+    <a href="/tags/组件/"><i class="fa fa-tags"></i>组件</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/Vue/2019-04-25-computed-methods和watch/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2019-04-09-吸顶效果和防抖节流/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/Vue/2019-04-25-computed-methods和watch/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2019-04-09-吸顶效果和防抖节流/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

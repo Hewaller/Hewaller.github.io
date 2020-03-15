@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>git | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="工作中一些 git 的用法，随手记录一下">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-12-12
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/git/"><i class="fa fa-bookmark"></i>git</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    git
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="工作中使用的一些-git-小技巧"><a href="#工作中使用的一些-git-小技巧" class="headerlink" title="工作中使用的一些 git 小技巧"></a>工作中使用的一些 git 小技巧</h2><h3 id="合并冲突"><a href="#合并冲突" class="headerlink" title="合并冲突"></a>合并冲突</h3><blockquote>
+<p>git stash</p>
+</blockquote>
+<pre><code class="language-js">git stash
+git pull
+git stash pop
+// 修改冲突
+git push
+</code></pre>
+<h3 id="git-add-后如何撤销"><a href="#git-add-后如何撤销" class="headerlink" title="git add 后如何撤销"></a>git add 后如何撤销</h3><p><a href="https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E6%92%A4%E6%B6%88%E6%93%8D%E4%BD%9C" target="_blank" rel="noopener">官方链接</a></p>
+<pre><code class="language-js">git status  // 先看一下add 中的文件
+git reset HEAD  // 如果后面什么都不跟的话 就是上一次add 里面的全部撤销了
+git reset HEAD &lt;file&gt;...  // 就是对某个文件进行撤销了
+</code></pre>
+<h3 id="git-commit-撤销"><a href="#git-commit-撤销" class="headerlink" title="git commit 撤销"></a>git commit 撤销</h3><pre><code class="language-js">git reset --soft HEAD^
+git reset --soft commit_id
+// HEAD^的意思是上一个版本，也可以写成HEAD~1
+// 如果你进行了2次commit，想都撤回，可以使用HEAD~2
+</code></pre>
+<blockquote>
+<p>reset 后的参数</p>
+</blockquote>
+<p>1、–mixed： 不删除工作空间改动代码，撤销 commit，并且撤销 git add . 操作</p>
+<p>2、–soft 不删除工作空间改动代码，撤销 commit，不撤销 git add .</p>
+<p>3、 –hard 删除工作空间改动代码，撤销 commit，撤销 git add .，完成这个操作后，就恢复到了上一次的 commit 状态。</p>
+<blockquote>
+<p>修改 commit 的注释</p>
+</blockquote>
+<p>git commit –amend</p>
+<h2 id="新建分支并推送到远程仓库"><a href="#新建分支并推送到远程仓库" class="headerlink" title="新建分支并推送到远程仓库"></a>新建分支并推送到远程仓库</h2><pre><code class="language-js">git checkout -b branchDemo
+git push origin branchDemo
+</code></pre>
+<h3 id="仓库添加新的提交地址"><a href="#仓库添加新的提交地址" class="headerlink" title="仓库添加新的提交地址"></a>仓库添加新的提交地址</h3><pre><code class="language-js">
+// 拉取所有的分支
+
+git branch -r | grep -v &#39;\-&gt;&#39; | while read remote; do git branch --track &quot;${remote#origin/}&quot; &quot;$remote&quot;; done
+git fetch --all
+git pull --all
+
+
+git remote -v
+
+// 1、直接更改原仓库的地址
+git remote set-url origin 新的仓库地址
+git push --all // 提交所有的分支
+
+// 2、添加多个远程仓库
+
+git remote add backup  新的仓库地址
+
+git pull backup
+git push backup
+
+// 3、 不更改原来的仓库地址，在 origin 后追加一个仓库地址
+git remote set-url --add origin 新的仓库地址
+
+</code></pre>
+<blockquote>
+<p>取消本地目录下关联的远程库</p>
+</blockquote>
+<pre><code class="language-js">git remote remove backup
+</code></pre>
+<h3 id="github-上代码下载很慢"><a href="#github-上代码下载很慢" class="headerlink" title="github 上代码下载很慢"></a>github 上代码下载很慢</h3><pre><code class="language-js">// 拉远程仓库某分支最近一次的commit
+git clone -b ${branch}  ${remotreurl} --depth=1
+
+// git config 和 小飞机的端口号配置一致后，开启代理
+http.proxy = 127.0.0.1:1087
+</code></pre>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#工作中使用的一些-git-小技巧"><span class="toc-text">工作中使用的一些 git 小技巧</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#合并冲突"><span class="toc-text">合并冲突</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#git-add-后如何撤销"><span class="toc-text">git add 后如何撤销</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#git-commit-撤销"><span class="toc-text">git commit 撤销</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#新建分支并推送到远程仓库"><span class="toc-text">新建分支并推送到远程仓库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#仓库添加新的提交地址"><span class="toc-text">仓库添加新的提交地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#github-上代码下载很慢"><span class="toc-text">github 上代码下载很慢</span></a></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2019-12-12git/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/git/"><i class="fa fa-tags"></i>git</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="javascript:void(0);" data-enable="false">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2019-10-09前端自检清单/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="javascript:void(0);" data-enable="false">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2019-10-09前端自检清单/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

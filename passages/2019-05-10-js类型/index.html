@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>JS类型判断和类型转换 | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="JS 中其中类型判断和类型转换最后跟新日期： 2019-05-14参考文章： 你不知道的 JavaScript、冴羽的 JavaScript 专题系列">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-05-11
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/JavaScript/"><i class="fa fa-bookmark"></i>JavaScript</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    JS类型判断和类型转换
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="7-种类型"><a href="#7-种类型" class="headerlink" title="7 种类型"></a>7 种类型</h2><ul>
+<li>String</li>
+<li>Number</li>
+<li>Boolean</li>
+<li>Null</li>
+<li>undefined</li>
+<li>Symbol</li>
+<li>Object</li>
+</ul>
+<h2 id="类型判断"><a href="#类型判断" class="headerlink" title="类型判断"></a>类型判断</h2><h3 id="使用-typeof-类型判断"><a href="#使用-typeof-类型判断" class="headerlink" title="使用 typeof 类型判断"></a>使用 <code>typeof</code> 类型判断</h3><pre><code class="language-js">typeof undefined // &quot;undefined&quot;
+typeof true // &quot;boolean&quot;
+typeof 1 // &quot;number&quot;
+typeof &#39;s&#39; // &quot;string&quot;
+typeof {} // &quot;object&quot;
+typeof Symbol() // &quot;symbol&quot;
+// 特殊类型
+typeof null // &quot;object&quot;
+
+// 检测 null 值的类型
+const a = null
+!a &amp;&amp; typeof a === &#39;object&#39; // true
+</code></pre>
+<blockquote>
+<p><code>object</code> 类型中还包含很多的’子类型’， Array、Function、Date、RegExp、Error， 但是函数例外</p>
+</blockquote>
+<pre><code class="language-js">typeof function a() {} === &#39;function&#39; // true
+</code></pre>
+<blockquote>
+<p>function(函数)也是 JavaScript 的一个内置类型。实际上是 object 的一个“子类型”。具体来说，函数是“可调用对象”，它有一个内部属性 <code>[[Call]]</code>，该属性使其可以被调用</p>
+</blockquote>
+<pre><code class="language-js">//typeof 只有 function 的情况下返回 &#39;function&#39;,其他类型都返回 `object`
+typeof new Date() // object
+typeof new Error() // object
+</code></pre>
+<h3 id="Object-prototype-toString-更详细的检测类型"><a href="#Object-prototype-toString-更详细的检测类型" class="headerlink" title="Object.prototype.toString 更详细的检测类型"></a><code>Object.prototype.toString</code> 更详细的检测类型</h3><ul>
+<li>如果 <code>this</code> 值是 <code>undefined</code> ，就返回 <code>[object Undefined]</code></li>
+<li>如果 <code>this</code> 的值是 <code>null</code> ，就返回 <code>[object Null]</code></li>
+<li>返回由 <code>&quot;[object &quot;, class and &quot;]&quot;</code>三个部分组成的字符串<blockquote>
+<p>至少 17 种类型：Number, String, Boolean, Undefined, Null, Object, Function, Array, Date, Error, RegExp, Math, JSON, Arguments Symbol Set Map</p>
+</blockquote>
+</li>
+</ul>
+<pre><code class="language-js">//  demo 返回的 `class` 就是我们期望的类型， 与 `typeof` 不同的是，这里返回的类型，首字母都是大写的
+Object.prototype.toString.call(undefined) // [object Object]
+Object.prototype.toString.call(null) // [object Object]
+
+Object.prototype.toString.call(Symbol()) //[object Symbol]
+Object.prototype.toString.call(new Set()) //[object Set]
+Object.prototype.toString.call(new Map()) //[object Map]
+Object.prototype.toString.call(new Date()) // [object Date]
+Object.prototype.toString.call(Math) // [object Math]
+
+a = () =&gt; {
+  console.log(Object.prototype.toString.call(arguments)) // [object Arguments]
+}
+a()
+</code></pre>
+<pre><code class="language-js">function classType() {
+  const classType = {}
+  // 来自 `冴羽的 JavaScript 专题系列`
+  // 生成classType映射
+  &#39;Boolean Number String Function Array Date RegExp Object Error Symbol Set Map&#39;
+    .split(&#39; &#39;)
+    .map((item, index) =&gt; {
+      classType[&#39;[object &#39; + item + &#39;]&#39;] = item.toLowerCase()
+    })
+
+  type = obj =&gt; {
+    // 一箭双雕
+    if (obj == null) {
+      return obj + &#39;&#39;
+    }
+    return typeof obj === &#39;object&#39; || typeof obj === &#39;function&#39;
+      ? classType[Object.prototype.toString.call(obj)] || &#39;object&#39;
+      : typeof obj
+  }
+}
+</code></pre>
+<h2 id="类型值简介"><a href="#类型值简介" class="headerlink" title="类型值简介"></a>类型值简介</h2><h3 id="Undefined-和-null"><a href="#Undefined-和-null" class="headerlink" title="Undefined 和 null"></a><code>Undefined</code> 和 <code>null</code></h3><p><code>undefined</code> 类型只有一个值，即 <code>undefined</code>。<code>null</code> 类型也只有一个值，即 <code>null</code>。它们的名称既是类型也是值。</p>
+<ul>
+<li><code>undefined</code> 指从未赋值， <code>undefined</code> 却是一个标识符，在非严格条件下可以被当作变量来使用和赋值， 在严格模式下可以声明一个名为 <code>undefined</code> 的局部变量</li>
+<li><code>null</code> 指曾赋过值，但是目前没有值， <code>null</code> 是一个 <code>JavaScript</code> 关键字，不是标识符，我们不能将其当作变量来使用和赋值</li>
+</ul>
+<blockquote>
+<p><code>void</code> 运算符: 表达式<code>void ___</code>没有返回值，因此返回结果是<code>undefined</code>。<br>为了避免无意中被篡改，使用<code>void 0</code> 来获取 <code>undefined</code> 值</p>
+</blockquote>
+<h3 id="String"><a href="#String" class="headerlink" title="String"></a>String</h3><p><code>String</code> 有最大长度是 <code>2^53 - 1</code>，<code>String</code> 的意义并非“字符串”，而是字符串的 <code>UTF16</code> 编码，我们字符串的操作 <code>charAt</code>、<code>charCodeAt</code>、<code>length</code> 等方法针对的都是 <code>UTF16</code> 编码， <code>JavaScript</code> 中的字符串是永远无法变更的，一旦字符串构造出来，无法用任何方式改变字符串的内容，所以字符串具有值类型的特征</p>
+<blockquote>
+<p>区别于数组：</p>
+</blockquote>
+<pre><code class="language-js">let a = &#39;foo&#39;
+let b = [&#39;f&#39;, &#39;o&#39;, &#39;o&#39;]
+
+a[1] = &#39;O&#39; // &quot;foo&quot; 字符串是不可变的
+// a.charAt(1) 取值是不是更优雅一些
+b[1] = &#39;O&#39; // [&quot;f&quot;,&quot;O&quot;,&quot;o&quot;]
+
+// 字符串不能直接反转，数组可以
+a.reverse() //undefined
+b.reverse() //[&quot;o&quot;,&quot;o&quot;,&quot;f&quot;]
+
+// 实现字符串反转
+a.split(&#39;&#39;)
+  .reverse()
+  .join(&#39;&#39;) // [&quot;o&quot;,&quot;o&quot;,&quot;f&quot;]
+</code></pre>
+<h3 id="Number"><a href="#Number" class="headerlink" title="Number"></a>Number</h3><blockquote>
+<p><code>JavaScript</code> 中的 <code>Number</code> 类型有 <code>18437736874454810627</code>(即 <code>2^64-2^53+3</code>) 个值</p>
+</blockquote>
+<p><code>JavaScript</code> 为了表达几个额外的语言场景(比如不让除以 <code>0</code> 出错，而引入了无穷大的概念)，规定了几个例外情况:</p>
+<ul>
+<li>NaN，占用了 9007199254740990，这原本是符合 IEEE 规则的数字;</li>
+<li>Infinity，无穷大;</li>
+<li>-Infinity，负无穷大</li>
+</ul>
+<blockquote>
+<p><code>JavaScript</code> 中有 <code>+0</code> 和 <code>-0</code>，在加法类运算中它们没有区别，但是除 法的场合则需要特别留意区分，“忘记检测除以 <code>-0</code>，而得到负无穷大”的情况经常会导致 错误，而区分 <code>+0</code> 和 <code>-0</code> 的方式，正是检测 <code>1/x</code> 是 <code>Infinity</code> 还是 <code>-Infinity</code></p>
+</blockquote>
+<blockquote>
+<p>NaN 是一个特殊值，它和自身不相等，是唯一一个非自反(自反，reflexive，即 x === x 不 成立)的值。而 <code>NaN != NaN</code> 为 true，可以使用内建的全局工具函数 <code>Number.isNaN(..)</code> 来判断一个值是否是 NaN。</p>
+</blockquote>
+<p><strong>isNaN(…) 和 Number.isNaN(…)</strong></p>
+<ul>
+<li><code>isNaN()</code>: 全局工具函数 <code>isNaN(..)</code> 来判断一个值是否是 <code>NaN</code>, 检查方式就是检查参数是否不是 <code>NaN</code>，也不是数字</li>
+</ul>
+<pre><code class="language-js">const a = 2 / &#39;foo&#39; //NaN
+const b = &#39;foo&#39;
+window.isNaN(a) // true
+window.isNaN(b) // true 不是数字也返回 true
+</code></pre>
+<ul>
+<li><code>Number.isNaN(..)</code></li>
+</ul>
+<h4 id="较小的数值"><a href="#较小的数值" class="headerlink" title="较小的数值"></a>较小的数值</h4><pre><code class="language-js">Number.isNaN(a) // true
+Number.isNaN(b) // false
+</code></pre>
+<p><code>JavaScript</code> 中的 <code>Number</code> 类型基本符合 <code>IEEE 754-2008</code> 规定的双精度浮点数规则，二进制浮点数最大的问题是<br><code>0.1 + 0.2 === 0.3; // false</code></p>
+<blockquote>
+<p>二进制浮点数中的 <code>0.1 和 0.2</code> 并不是十分精确，它们相加的结果并非刚好等于 <code>0.3</code>，而是一个比较接近的数字 <code>0.30000000000000004</code>，所以条件判断结果为 <code>false</code></p>
+</blockquote>
+<p>正确的比较方法是使用 <code>JavaScript</code> 提供的最小精度值:<br><code>console.log( Math.abs(0.1 + 0.2 - 0.3) &lt;= Number.EPSILON);</code></p>
+<h4 id="整数的检测"><a href="#整数的检测" class="headerlink" title="整数的检测"></a>整数的检测</h4><p>要检测一个值是否是整数，可以使用 ES6 中的 Number.isInteger(..) 方法:</p>
+<pre><code class="language-js">Number.isInteger(42) // true
+Number.isInteger(42.0) // true
+Number.isInteger(42.3) // false
+</code></pre>
+<h3 id="Symbol"><a href="#Symbol" class="headerlink" title="Symbol"></a>Symbol</h3><p>它是一切非字符串的对象 <code>key</code> 的集合，在 <code>ES6</code> 规范 中，整个对象系统被用 <code>Symbol</code> 重塑。</p>
+<blockquote>
+<p>Symbol 可以具有字符串类型的描述，但是即使描述相同，Symbol 也不相等。<br><code>var mySymbol = Symbol(&quot;my symbol&quot;)</code></p>
+</blockquote>
+<h3 id="Object"><a href="#Object" class="headerlink" title="Object"></a>Object</h3><p>对象的定义是“属性的集合”。属性分为数据属性和访问器属性，二者都是 <code>key-value</code> 结构，<code>key</code> 可以是字符串或者 <code>Symbol</code> 类型。</p>
+<blockquote>
+<p>注意点：<br>Number、String 和 Boolean，三个构造器是两用的，当跟 <code>new</code> 搭配时，它们产生对象，当直接调用时，它们表示强制类型转换。<br>3 与 <code>new Number(3)</code> 是完全不同的值，它们一个是 <code>Number</code> 类 型， 一个是对象类型。</p>
+</blockquote>
+<p><strong>Object.is(..)</strong></p>
+<blockquote>
+<p>判断两个值是否绝对相等, <code>Object.is(..)</code> 主要用来处理那些特殊的相等比较</p>
+</blockquote>
+<pre><code class="language-js">Object.is(0 / &#39;foo&#39;, NaN) // true
+Object.is(-3 * 0, -0) // true
+Object.is(-3 * 0, 0) // false
+</code></pre>
+<p>简单的 polyfill:</p>
+<pre><code class="language-js">if (!Object.is) {
+  Object.is = function(v1, v2) {
+    // 判断是否是-0
+    if (v1 === 0 &amp;&amp; v2 === 0) {
+      return 1 / v1 === 1 / v2
+    }
+    // 判断是否是NaN
+    if (v1 !== v1) {
+      return v2 !== v2
+    }
+    // 其他情况
+    return v1 === v2
+  }
+}
+</code></pre>
+<h2 id="类型转换"><a href="#类型转换" class="headerlink" title="类型转换"></a>类型转换</h2>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#7-种类型"><span class="toc-text">7 种类型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类型判断"><span class="toc-text">类型判断</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-typeof-类型判断"><span class="toc-text">使用 typeof 类型判断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Object-prototype-toString-更详细的检测类型"><span class="toc-text">Object.prototype.toString 更详细的检测类型</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类型值简介"><span class="toc-text">类型值简介</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Undefined-和-null"><span class="toc-text">Undefined 和 null</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#String"><span class="toc-text">String</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Number"><span class="toc-text">Number</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#较小的数值"><span class="toc-text">较小的数值</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#整数的检测"><span class="toc-text">整数的检测</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Symbol"><span class="toc-text">Symbol</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Object"><span class="toc-text">Object</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#类型转换"><span class="toc-text">类型转换</span></a></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2019-05-10-js类型/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/JavaScript/"><i class="fa fa-tags"></i>JavaScript</a>
+    
+    <a href="/tags/前端/"><i class="fa fa-tags"></i>前端</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/CSS/2019-08-25-常用的css/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/Vue/2019-04-25-computed-methods和watch/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/CSS/2019-08-25-常用的css/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/Vue/2019-04-25-computed-methods和watch/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

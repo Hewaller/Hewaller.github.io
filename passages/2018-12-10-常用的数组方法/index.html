@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>常用的数据处理方法 | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="数据处理：分类，数组去重，深浅拷贝最后修改日期 2019-05-18">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2018-12-10
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/JavaScript/"><i class="fa fa-bookmark"></i>JavaScript</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    常用的数据处理方法
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="数组去重"><a href="#数组去重" class="headerlink" title="数组去重"></a>数组去重</h2><h3 id="使用-indexOf-和-includes"><a href="#使用-indexOf-和-includes" class="headerlink" title="使用 indexOf 和 includes"></a>使用 <code>indexOf</code> 和 <code>includes</code></h3><pre><code class="language-js">  indexOf(arr = []) {
+    const res = []
+    arr.forEach((item) =&gt; {
+      if (res.indexOf(item) === -1) {  //!res.includes(item)
+        res.push(item)
+      }
+    })
+    return res
+  }
+</code></pre>
+<h3 id="filter"><a href="#filter" class="headerlink" title="filter"></a>filter</h3><pre><code class="language-js">filter(arr = []) {
+  return arr.filter((item, index, arr) =&gt; {
+    return arr.indexOf(item) !== item
+  })
+}
+
+filter(arr=[]) {
+  // arr.concat() 复制出来一份原有的数组，且对复制出来的新数组的操作不会影响到原有数组
+  return arr.concat()sort().filter((item,index,arr) =&gt; {
+    return !item || arr[index - 1] !== item
+  })
+}
+</code></pre>
+<h3 id="Object-键值对"><a href="#Object-键值对" class="headerlink" title="Object 键值对"></a>Object 键值对</h3><pre><code class="language-js">const array = [{value: 1}, {value: 1}, {value: 2}];
+
+unique(array = []) {
+    const obj = {};
+    return array.filter(function(item, index, array){
+        // console.log(typeof item + JSON.stringify(item))
+        return obj.hasOwnProperty(typeof item + JSON.stringify(item)) ? false : (obj[typeof item + JSON.stringify(item)] = true)
+    })
+}
+
+console.log(unique(array)); // [{value: 1}, {value: 2}]
+</code></pre>
+<h3 id="Set-、Map-和-…rest"><a href="#Set-、Map-和-…rest" class="headerlink" title="Set 、Map 和 …rest"></a>Set 、Map 和 …rest</h3><blockquote>
+<p>使用 Set 可以区分出 <code>NAN</code>, 因为 <code>NAN</code> 不等于自身，所以 <code>indexOf</code> 不能查找到，而使用 <code>Set</code> 就可以解决这个问题<br>注意： 由于<code>{} !== {} // true</code>， 所以对象默认是不重复的，使用 <code>JSON.stringify</code> 可以解决这个问题</p>
+</blockquote>
+<pre><code class="language-js">setArr(arr = []) {
+  // Set 是值的集合，类似于数组，但是每个值都是唯一的
+  return [...new Set(arr)]
+}
+
+mapArr(arr = []) {
+  // Map 是一个键值对集合，先检查有没有这哥属性，没有就添加尽这个集合中
+  const seen = new Map(arr)
+  return arr.filter(item =&gt; !seen.has(a) &amp;&amp; seen.set(a,1))
+}
+</code></pre>
+<h2 id="数组分组"><a href="#数组分组" class="headerlink" title="数组分组"></a>数组分组</h2><h3 id="使用-forEach-遍历分组"><a href="#使用-forEach-遍历分组" class="headerlink" title="使用 forEach 遍历分组"></a>使用 <code>forEach</code> 遍历分组</h3><pre><code class="language-js">const list = [
+  { label: &#39;a&#39;, value: 1 },
+  { label: &#39;c&#39;, value: 3 },
+  { label: &#39;b&#39;, value: 1 },
+  { label: &#39;a&#39;, value: 3 },
+  { label: &#39;c&#39;, value: 2 }
+]
+const collect = {}
+list.forEach(item =&gt; {
+  // console.log(item)
+  if (!collect[item.label]) {
+    collect[item.label] = []
+  }
+  collect[item.label].push(item)
+})
+
+// 处理后的数据
+collect = {
+  a: [1, 3],
+  b: [1],
+  c: [3, 2]
+}
+
+// 可以使用entries(),keys(),values()来获取所需要的值
+</code></pre>
+<h3 id="使用-30-seconds-of-code-里-reduce-的方法"><a href="#使用-30-seconds-of-code-里-reduce-的方法" class="headerlink" title="使用 30 seconds of code 里 reduce 的方法"></a>使用 <code>30 seconds of code</code> 里 <code>reduce</code> 的方法</h3><pre><code class="language-js">const groupBy = (arr, fn) =&gt;
+  arr
+    .map(typeof fn === &#39;function&#39; ? fn : val =&gt; val[fn])
+    .reduce((acc, val, i) =&gt; {
+      acc[val] = (acc[val] || []).concat(arr[i])
+      return acc
+    }, {})
+const collect = groupBy(list, item =&gt; item.label)
+</code></pre>
+<h2 id="浅拷贝和深拷贝"><a href="#浅拷贝和深拷贝" class="headerlink" title="浅拷贝和深拷贝"></a>浅拷贝和深拷贝</h2><h3 id="浅拷贝"><a href="#浅拷贝" class="headerlink" title="浅拷贝"></a>浅拷贝</h3><blockquote>
+<p>只是对基本类型进行了拷贝，类似于数组和对象这一种的引用类型的值，只会拷贝其在内存中的引用，依然是通过引用指向同一块堆内存，无论新旧数组发生改变，都会改变内存中值，两者的值同时发生改变</p>
+</blockquote>
+<ul>
+<li>数组自带的方法： <code>slice</code>、<code>concat</code>、<code>Array.from()</code><pre><code class="language-js">const arr = [1, 2, [3, 4]]
+arr.concat()
+arr.slice()
+Array.from(arr)
+</code></pre>
+</li>
+<li>对象和数组的结构也可以实现浅拷贝<pre><code class="language-js">const [...arr] = [1, 2, [3, 4]]
+const obj = { ...{ a: 1, b: 2, f: { c: 3, d: 4 } } }
+</code></pre>
+</li>
+<li>简单的函数实现<pre><code class="language-js">function clone(o) {
+  const obj = {}
+  for (let i in o) {
+    obj[i] = o[i]
+  }
+  return obj
+}
+</code></pre>
+</li>
+</ul>
+<h3 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h3><ol>
+<li><p><code>JSON</code> 字符串化（你不知道的 JavaScript(中)）</p>
+<blockquote>
+<p>工具函数 <code>JSON.stringify()</code> 在将 <code>JSON</code> 对象序列化为字符串时并非严格意义上的强制类型转换，而是使用了 <code>ToString</code>。<br>所有安全的 JSON 值(JSON-safe)都可以使用 JSON.stringify(..) 字符串化。安全的 JSON 值是指能够呈现为有效 JSON 格式的值。</p>
+</blockquote>
+<p><strong>不安全的 JSON 值</strong></p>
+<ul>
+<li>undefined =&gt; null</li>
+<li>function =&gt; null</li>
+<li>symbol =&gt; null</li>
+<li>循环引用（对象之间循环引用，形成了无限循环） =&gt; 程序报错</li>
+</ul>
+<pre><code class="language-js">JSON.stringify(undefined) // undefined
+JSON.stringify(function() {}) // undefined
+JSON.stringify([1, undefined, function() {}, 4]) //&quot;[1, null, null, 4]&quot;
+JSON.stringify({ a: 2, b: function() {} }) // &quot;{&quot;a&quot;: 2}&quot;
+</code></pre>
+<blockquote>
+<p>如果队形中定义了 <code>toJSON()</code>方法，<code>JSON</code> 字符串化会首先调用该方法，然后用返回值进行序列化，包含循环引用的对象执行 <code>JSON.stringify(...)</code>会报错<br><code>toJSON()</code> 应该“返回一个能够被字符串化的安全的 <code>JSON</code> 值”，而不是“返回 一个 <code>JSON</code> 字符串”</p>
+</blockquote>
+<pre><code class="language-js">const o = {}
+const a = {
+  b: 42,
+  c: o,
+  d: function() {}
+}
+
+// 在a中创造一个循环引用
+o.e = a
+JSON.stringify(a) //循环引用会报错
+// 自定义JSON序列化
+a.toJSON = () =&gt; {
+  // 序列化尽包涵 b
+  return { b: this.b }
+}
+JSON.stringify(a) // &quot;{&quot;b&quot;: 42}&quot;
+</code></pre>
+<p><strong>参数</strong></p>
+<ul>
+<li>replacer(数组或者函数)<ul>
+<li>数组：必须是一个字符串数组，其中包含序列化要处理的对象 的属性名称，除此之外其他的属性则被忽略。</li>
+<li>函数，它会对对象本身调用一次，然后对对象中的每个属性各调用一次，每次传递两个参数(key, value)。如果要忽略某个键就返回 undefined，否则返回指定的值。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="language-js">const a = { b: 42, c: &#39;42&#39;, d: [1, 2, 3] }
+JSON.stringify(a, [&#39;b&#39;, &#39;c&#39;]) // &quot;{&quot;b&quot;:42,&quot;c&quot;:&quot;42&quot;}&quot;
+JSON.stringify(a, function(k, v) {
+  if (k !== &#39;c&#39;) return v
+})
+// &quot;{&quot;b&quot;:42,&quot;d&quot;:[1,2,3]}&quot;
+</code></pre>
+<ul>
+<li>space: 指定输出的缩进格式</li>
+</ul>
+<p><strong>简单的深拷贝</strong></p>
+<pre><code class="language-js">const newObj = JSON.parse(JSON.stringify(oldObj))
+</code></pre>
+<p>缺陷：</p>
+<ul>
+<li>无法实现对函数 、<code>RegExp</code> 等特殊对象的克隆</li>
+<li>会抛弃对象的 <code>constructor</code>,所有的构造函数会指向 <code>Object</code></li>
+<li>循环引用对象，会报错</li>
+</ul>
+</li>
+</ol>
+<p>2、真正意义上的深拷贝</p>
+<blockquote>
+<p>在拷贝的时候判断一下属性值的类型，如果是对象，面对不同的对象(正则、数组、Date 等)要采用不同的处理方式，我们递归调用深拷贝函数</p>
+</blockquote>
+<pre><code class="language-js">function deepCopy(obj) {
+  if (typeof obj !== &#39;object&#39;) return
+  const newObj = obj instanceof Array ? [] : {}
+  for (let key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      newObj[key] = typeof obj[key] === &#39;object&#39; ? deepCopy(obj[key]) : obj[key]
+    }
+  }
+  return newObj
+}
+</code></pre>
+<p><strong>更加完善的深拷贝</strong><br>来自<a href="https://juejin.im/post/5abb55ee6fb9a028e33b7e0a#comment" target="_blank" rel="noopener">面试官:请你实现一个深克隆</a></p>
+<blockquote>
+<p>我们需要通过正则的扩展了解到 <code>flags</code> 属性等等,因此我们需要实现一个提取 <code>flags</code> 的函数.</p>
+</blockquote>
+<pre><code class="language-js">const getRegExp = re =&gt; {
+  var flags = &#39;&#39;
+  if (re.global) flags += &#39;g&#39;
+  if (re.ignoreCase) flags += &#39;i&#39;
+  if (re.multiline) flags += &#39;m&#39;
+  return flags
+}
+</code></pre>
+<pre><code class="language-js">/**
+ * deep clone
+ * @param  {[type]} parent object 需要进行克隆的对象
+ * @return {[type]}        深克隆后的对象
+ * classType 类型判断函数
+ */
+const clone = parent =&gt; {
+  // 维护两个储存循环引用的数组
+  const parents = []
+  const children = []
+
+  const _clone = parent =&gt; {
+    if (parent === null) return null
+    if (typeof parent !== &#39;object&#39;) return parent
+
+    let child, proto
+
+    if (classType(parent) === &#39;array&#39;)) {
+      // 对数组做特殊处理
+      child = []
+    } else if (classType(parent) === &#39;regexp&#39;)) {
+      // 对正则对象做特殊处理
+      child = new RegExp(parent.source, getRegExp(parent))
+      if (parent.lastIndex) child.lastIndex = parent.lastIndex
+    } else if (classType(parent) === &#39;date&#39;)) {
+      // 对Date对象做特殊处理
+      child = new Date(parent.getTime())
+    } else {
+      // 处理对象原型
+      proto = Object.getPrototypeOf(parent)
+      // 利用Object.create切断原型链
+      child = Object.create(proto)
+    }
+
+    // 处理循环引用
+    const index = parents.indexOf(parent)
+
+    if (index != -1) {
+      // 如果父数组存在本对象,说明之前已经被引用过,直接返回此对象
+      return children[index]
+    }
+    parents.push(parent)
+    children.push(child)
+    // 递归
+    for (let i in parent) {
+      //过滤原型上的属性
+      if(parent.hasOwnProperty(i)){
+        child[i] = _clone(parent[i])
+      }
+    }
+
+    return child
+  }
+  return _clone(parent)
+}
+</code></pre>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#数组去重"><span class="toc-text">数组去重</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-indexOf-和-includes"><span class="toc-text">使用 indexOf 和 includes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#filter"><span class="toc-text">filter</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Object-键值对"><span class="toc-text">Object 键值对</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Set-、Map-和-…rest"><span class="toc-text">Set 、Map 和 …rest</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#数组分组"><span class="toc-text">数组分组</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-forEach-遍历分组"><span class="toc-text">使用 forEach 遍历分组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#使用-30-seconds-of-code-里-reduce-的方法"><span class="toc-text">使用 30 seconds of code 里 reduce 的方法</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#浅拷贝和深拷贝"><span class="toc-text">浅拷贝和深拷贝</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#浅拷贝"><span class="toc-text">浅拷贝</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#深拷贝"><span class="toc-text">深拷贝</span></a></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2018-12-10-常用的数组方法/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/JavaScript/"><i class="fa fa-tags"></i>JavaScript</a>
+    
+    <a href="/tags/前端/"><i class="fa fa-tags"></i>前端</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/Vue/2018-12-20-vuex/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2018-11-25-minApp/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/Vue/2018-12-20-vuex/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2018-11-25-minApp/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

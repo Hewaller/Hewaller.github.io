@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>小程序登陆和常用Api | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="小程序登陆的实现代码最后更改时间 2019-05-06">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2018-11-25
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/weChat/"><i class="fa fa-bookmark"></i>weChat</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    小程序登陆和常用Api
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="登陆流程的改变"><a href="#登陆流程的改变" class="headerlink" title="登陆流程的改变"></a>登陆流程的改变</h2><blockquote>
+<p>原来我们在首次进入小程序时，会通过 getUserInfo 调起用户授权的弹窗，但是根据微信小程序，最新更新解释，开发工具，体验版本将不再支持这个授权方式而是通过 button 组件让用户自主去点击已完成授权目的（这个对开发者来说真的是很蛋疼）,</p>
+</blockquote>
+<blockquote>
+<p>解决方案： 设置一个用户登陆的过渡页面</p>
+</blockquote>
+<pre><code class="language-js">  &lt;button wx:if=&quot;{{canIUse}}&quot; open-type=&quot;getUserInfo&quot; bindgetuserinfo=&quot;bindGetUserInfo&quot;&gt;授权登录&lt;/button&gt;
+  &lt;view wx:else&gt;请升级微信版本&lt;/view&gt;  //让用户自己去点击这个授权登录的按钮，然后再去进行后续的业务逻辑
+</code></pre>
+<h3 id="小程序登陆逻辑"><a href="#小程序登陆逻辑" class="headerlink" title="小程序登陆逻辑"></a>小程序登陆逻辑</h3><blockquote>
+<p><code>wx.login()</code> 去获取用户的 <code>code</code> 之后，发送 <code>code</code> 给后台换取 <code>session_key</code>、<code>unionid</code>、 <code>openid</code> 这个请求的过程一般是在打开登陆界面的时候就已经调用了（此时已经取得了 <code>session_key</code>），当用户点击登陆的时候才会去调取登陆接口，拿获得 <code>session_key</code> 去换取用户信息，此时还拿到了服务器返回的 <code>token</code>，用于用户以后的登陆，作为登陆的另外一个依据</p>
+</blockquote>
+<ul>
+<li><code>code</code> 临时登录凭证, 有效期五分钟, 通过 <code>wx.login()</code> 获取</li>
+<li><code>session_key</code> 会话密钥, 服务端通过 <code>code2Session</code> 获取</li>
+<li><code>openId</code> 用户在该小程序下的用户唯一标识, 永远不变, 服务端通过 <code>code</code> 获取</li>
+<li><code>unionId</code> 用户在同一个微信开放平台帐号(公众号, 小程序, 网站, 移动应用)下的唯一标识, 永远不变</li>
+<li><code>appId</code> 小程序唯一标识</li>
+<li><code>appSecret</code> 小程序的 <code>app secret</code>, 可以和 <code>code</code>, <code>appId</code> 一起换取 <code>session_key</code></li>
+</ul>
+<pre><code class="language-js">// code 换取 session_key
+
+async function fetchSessionKey(code) {
+  const { session_key, unionid, token, openid = &#39;&#39;, user = {} } = await request(
+    {
+      url: &#39;/api/app/v1/miniapp/session&#39;,
+      method: &#39;post&#39;,
+      data: { code }
+    }
+  )
+  user.session_key = session_key
+  user.unionid = unionid
+  user.openid = openid
+  authority.set(user)
+  if (token) {
+    user.token = token
+    authority.set(user)
+    const { back } = getCurrentOptions()
+    if (!back) return
+    wx.reLaunch({
+      url: decodeURIComponent(back)
+    })
+  } else {
+    const back = getCurrentUrl()
+    // 重定向登陆页面
+    if (!back.startsWith(&#39;/pages/login/main&#39;)) {
+      wx.redirectTo({
+        url: `/pages/login/main?back=${encodeURIComponent(back)}`
+      })
+    }
+    authority.set({ session_key, unionid })
+  }
+  return true
+}
+
+export default () =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    const user = authority.get() || {}
+    if (user.token) return resolve(user) // todo
+    const errorHandle = e =&gt; {
+      console.error(e)
+      wx.showToast({
+        title: &#39;获取code失败&#39;,
+        icon: &#39;none&#39;
+      })
+      reject(e)
+    }
+    wx.login({
+      success({ code }) {
+        fetchSessionKey(code)
+          .then(resolve)
+          .catch(errorHandle)
+      },
+      fail(e) {
+        errorHandle(e)
+      }
+    })
+  })
+}
+</code></pre>
+<h2 id="wx-getStorageSync-And-wx-setStorageSync"><a href="#wx-getStorageSync-And-wx-setStorageSync" class="headerlink" title="wx.getStorageSync And wx.setStorageSync"></a>wx.getStorageSync And wx.setStorageSync</h2><ol>
+<li>读取信息的时候要使用 try/catch 捕捉错误</li>
+<li>key 要唯一</li>
+<li>清除数据之前要保存重要的信息： 用于登陆所需的信息</li>
+</ol>
+<pre><code class="language-javascript">const key = &#39;user_info&#39; // 定义储存的key，一定要确保是单一的
+const maxAge = 1000 * 60 * 60 * 24 * 60 // 设置过期时间，60天过期
+
+export default {
+  get() {
+    // 获取存储到localStorage中的数据，一般是用户信息，使用try/catch捕捉错误
+    try {
+      const user = wx.getStorageSync(key)
+      if (!user || user.time + maxAge &lt; Date.now()) return null
+      // 如果储存的时间过期了，直接返回null，重新发送登陆接口获取
+      return user || {}
+    } catch (e) {
+      return {}
+    }
+  },
+  set(user) {
+    if (!user) return null
+    // 存储数据，没有数据直接返回null，外部捕捉这个null来判定是否成功
+    user.time = Date.now()
+    // 设置储存时间，用来判断是否过期
+    const oldUser = this.get() || {}
+    const newUser = { ...oldUser, ...user } //将以前的数据和新的数据一起整合在一起
+    console.log(newUser, &#39;newuser&#39;)
+    wx.setStorageSync(key, newUser) //微信存储数据的静态方法
+    return newUser
+  },
+  clear() {
+    const user = this.get() || {}
+    const { regionCode = &#39;&#39;, currentCity = &#39;&#39;, shop_id = &#39;&#39; } = user
+    // 即使是清除数据，也保存重要的登陆信息
+    wx.clearStorageSync()
+    this.set({ regionCode, currentCity, shop_id })
+    // 清空完之后再次储存
+    return user
+  }
+}
+</code></pre>
+<h2 id="登陆信息存储于本地"><a href="#登陆信息存储于本地" class="headerlink" title="登陆信息存储于本地"></a>登陆信息存储于本地</h2><pre><code class="language-js">const key = &#39;user_info&#39; // 定义储存的key，一定要确保是单一的
+const maxAge = 1000 * 60 * 60 * 24 * 60 // 设置过期时间，60天过期
+
+export default {
+  get() {
+    // 获取存储到localStorage中的数据，一般是用户信息，使用try/catch捕捉错误
+    try {
+      const user = wx.getStorageSync(key)
+      if (!user || user.time + maxAge &lt; Date.now()) return null
+      // 如果储存的时间过期了，直接返回null，重新发送登陆接口获取
+      return user || {}
+    } catch (e) {
+      return {}
+    }
+  },
+  set(user) {
+    if (!user) return null
+    // 存储数据，没有数据直接返回null，外部捕捉这个null来判定是否成功
+    user.time = Date.now()
+    // 设置储存时间，用来判断是否过期
+    const oldUser = this.get() || {}
+    const newUser = { ...oldUser, ...user } //将以前的数据和新的数据一起整合在一起
+    wx.setStorageSync(key, newUser) //微信存储数据的静态方法
+    return newUser
+  },
+  clear() {
+    const user = this.get() || {}
+    const { regionCode = &#39;&#39;, currentCity = &#39;&#39;, shop_id = &#39;&#39; } = user
+    // 即使是清除数据，也保存重要的登陆信息
+    wx.clearStorageSync()
+    this.set({ regionCode, currentCity, shop_id })
+    // 清空完之后再次储存
+    return user
+  }
+}
+</code></pre>
+<h2 id="小程序表单和-video"><a href="#小程序表单和-video" class="headerlink" title="小程序表单和 video"></a>小程序表单和 video</h2><blockquote>
+<p>小程序的坑： textarea 和 video 当被激活时他们的层级永远是最高的，无法去处理<br>textarea 的处理方法： 当需要在 <code>textarea</code> 的上方加上一个弹窗活着页面时，需要手动的把 <code>textarea</code> 隐藏，换一种方法来实现<br>video 暂时还不知道怎么处理，同时还要注意视频的播放问题，在离开页面的时候要强制的关闭视频</p>
+</blockquote>
+<h2 id="小程序实现下拉刷新的操作"><a href="#小程序实现下拉刷新的操作" class="headerlink" title="小程序实现下拉刷新的操作"></a>小程序实现下拉刷新的操作</h2><pre><code class="language-js">async onPullDownRefresh() {
+    wx.showLoading();
+    ....
+    // 相应的上拉事件处理函数　
+    setTimeout(() =&gt; {
+      wx.hideLoading();
+      wx.stopPullDownRefresh();
+    }, 1000);
+  },
+</code></pre>
+<h2 id="页面触底之后的上拉操作"><a href="#页面触底之后的上拉操作" class="headerlink" title="页面触底之后的上拉操作"></a>页面触底之后的上拉操作</h2><pre><code class="language-js">async onReachBottom() {
+    // 首屏时只展示部分数据，未展示所有的数据
+    // 判断当前的数据量是不是后台接口返回的总数据量
+    if (this.List.length &lt; this.total) {
+    // 数据没有完全被加载，上拉一次再次加载一次数据
+      this.pageData.page = this.pageData.page + 1;
+      const List = this.List;
+      const data = await fetchExpertsDetail(this.pageData);
+      this.List = [...answerList, ...data.answer]; // 合并新请求的数据和老的数据
+    } else {
+    // 如果全加载了，给个提示
+      console.log(&#39;到底啦&#39;);
+    }
+  },
+</code></pre>
+<h2 id="小程序的路由跳转"><a href="#小程序的路由跳转" class="headerlink" title="小程序的路由跳转"></a>小程序的路由跳转</h2><blockquote>
+<p>要注意跳转到非 tabBar 页和 跳转到 tabBar 导航页</p>
+</blockquote>
+<ol>
+<li>跳转到到导航页： wx.switchTab(Object object) 跳转到 tabBar 页面，并关闭其他所有非 tabBar 页面</li>
+<li>跳转到非导航页： wx.navigateTo(Object object) 保留当前页面，跳转到应用内的某个页面，使用 wx.navigateBack 可以返回到原跳转的页面，原页面没有被销毁。</li>
+<li>wx.redirectTo(Object object) 关闭当前页面，跳转到应用内的某个页面。但是不允许跳转到 tabbar 页面。</li>
+</ol>
+<blockquote>
+<p>跳转的 query 参数<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;微信小程序的页面的 <code>query</code> 参数是通过 <code>onLoad</code> 获取的，<code>mpvue</code> 进行了优化，直接通过 <code>this.$root.$mp.query</code> 获取相应的参数数据，其调用需要在 <code>onLoad</code> 生命周期触发之后使用</p>
+</blockquote>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#登陆流程的改变"><span class="toc-text">登陆流程的改变</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#小程序登陆逻辑"><span class="toc-text">小程序登陆逻辑</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#wx-getStorageSync-And-wx-setStorageSync"><span class="toc-text">wx.getStorageSync And wx.setStorageSync</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#登陆信息存储于本地"><span class="toc-text">登陆信息存储于本地</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小程序表单和-video"><span class="toc-text">小程序表单和 video</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小程序实现下拉刷新的操作"><span class="toc-text">小程序实现下拉刷新的操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#页面触底之后的上拉操作"><span class="toc-text">页面触底之后的上拉操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#小程序的路由跳转"><span class="toc-text">小程序的路由跳转</span></a></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2018-11-25-minApp/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/前端/"><i class="fa fa-tags"></i>前端</a>
+    
+    <a href="/tags/小程序/"><i class="fa fa-tags"></i>小程序</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2018-12-10-常用的数组方法/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2018-11-20-mpvue/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2018-12-10-常用的数组方法/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2018-11-20-mpvue/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>

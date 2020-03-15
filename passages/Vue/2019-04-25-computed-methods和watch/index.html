@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  <meta name="author" content="markey">
+  
+
+  <title>computed、methods 和 watch | markey的blog</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+    
+  <meta name="description" content="Vue 知识点： computed、methods 和 watch最后更新日期 2019-04-25">
+
+    
+  <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
+    
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+   <script>
+  // theme-ad's config script
+  // it can be used in every script
+  
+  window.AD_CONFIG = {
+    leancloud: {"comment":false,"count":false},
+    welcome: {"enable":false,"interval":30},
+    start_time: "2019-03-01",
+    passwords: [],
+    is_post: true,
+    lock: false,
+    author: "markey",
+    share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
+    mathjax: true,
+    page_type: "",
+    root: "/"
+  };
+</script> <script src="/vendor/sha256.min.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/index.js"></script>
+<script src="/vendor/qrcode.min.js"></script> 
+  <link rel="icon" href="/images/favicon.ico">
+  <link rel="apple-touch-icon" href="/images/touch-icon.png">
+  
+
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="/css/index.css">
+<link rel="stylesheet" href="/styles/components/highlight/highlight.css">
+  
+  <link rel="stylesheet" href="/js/prism/prism.css">
+</head>
+
+
+  <body>
+    <header class="site-header">
+  <div class="site-header-brand">
+    
+      <span class="site-header-brand-title">
+        <a href="/">markey</a>
+      </span>
+    
+    
+      <span class="site-header-brand-motto"> | 安静写些东西</span>
+    
+  </div>
+  <div class="site-header-right">
+    <nav class="site-header-navigation">
+      
+        <a href="/" target="_self">首页</a>
+      
+        <a href="/archives/" target="_self">归档</a>
+      
+        <a href="/tags/" target="_self">标签</a>
+      
+        <a href="/categories/" target="_self">分类</a>
+      
+        <a href="/friends/" target="_self">友链</a>
+      
+    </nav>
+    <div class="site-header-btn">
+      
+        <a href="https://github.com/Hewaller" target="_blank" id="site-github">
+          <i class="fa fa-github-alt"></i>
+        </a>
+      
+      <a href="javascript:void(0);" id="site-search">
+        <i class="fa fa-search"></i>
+      </a>
+      <a href="javascript:void(0);" id="site-nav-btn">
+        <i class="fa fa-ellipsis-v"></i>
+      </a>
+    </div>
+  </div>
+</header>
+<nav class="table-content" id="site-nav">
+  <div class="table-content-title">
+    <span>导航</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc">
+      
+        <li class="toc-item">
+          <a href="/" target="_self">
+            首页
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/archives/" target="_self">
+            归档
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/tags/" target="_self">
+            标签
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/categories/" target="_self">
+            分类
+          </a>
+        </li>
+      
+        <li class="toc-item">
+          <a href="/friends/" target="_self">
+            友链
+          </a>
+        </li>
+      
+    </ol>
+  </div>
+</nav>
+<div id="site-process"></div>
+    <!-- <script
+      async
+      src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
+    ></script> -->
+    <main>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2019-04-25
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/Vue/"><i class="fa fa-bookmark"></i>Vue</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    computed、methods 和 watch
+  </h1>
+  
+  <article class="passage-article">
+    <h2 id="computed、methods-和-watch"><a href="#computed、methods-和-watch" class="headerlink" title="computed、methods 和 watch"></a>computed、methods 和 watch</h2><p><strong> 参考官网 </strong></p>
+<blockquote>
+<ul>
+<li>计算属性： 是基于它的响应式依赖进行缓存的。只在相关响应式依赖发生改变时它们才会重新求值。这就意味着只要所依赖的属性还没有发生改变，多次访问计算属性会立即返回之前的计算结果，而不必再次执行函数。但是 <strong>不能够动态的去给这个计算属性传值</strong><br>默认的计算属性都是读取的<code>getter</code> 函数， 但是需要时也可以提供一个 <code>setter</code></li>
+</ul>
+</blockquote>
+<pre><code class="language-js">  computed: {
+    fullName: {
+      // getter
+      get: function () {
+        return this.firstName + &#39; &#39; + this.lastName
+      },
+      // setter
+      set: function (newValue) {
+        var names = newValue.split(&#39; &#39;)
+        this.firstName = names[0]
+        this.lastName = names[names.length - 1]
+      }
+    }
+  }
+</code></pre>
+<blockquote>
+<ul>
+<li>方法(methods)： 每次访问都会调用，不会缓存数据，可以动态的接受不同值。</li>
+<li>监听属性(watch): 允许我们执行异步操作 (访问一个 API)，限制我们执行该操作的频率，并在我们得到最终结果前，设置中间状态。这些都是计算属性无法做到的。</li>
+</ul>
+</blockquote>
+<h2 id="watch"><a href="#watch" class="headerlink" title="watch"></a>watch</h2><p><code>handler</code>方法，<code>watch</code> 方法中默认写的就是这个 handler，<code>Vue</code>会自己去处理这个逻辑，<code>watch</code> 方法中最终编译出来其实就是这个 <code>handler</code>。</p>
+<h3 id="immediate-和-deep-属性"><a href="#immediate-和-deep-属性" class="headerlink" title="immediate 和 deep 属性"></a>immediate 和 deep 属性</h3><ul>
+<li><code>deep</code> 属性： 为了发现对象内部值的变化，默认值是 false，代表是否深度监听，可以在选项参数中指定 <code>deep: true</code>。(注意监听数组的变动不需要这么做。)</li>
+</ul>
+<pre><code class="language-js"> data() {
+    return {
+     obj: {
+        test: 1
+      }
+    }
+  },
+  watch: {
+    obj(e) {
+      console.log(e, &#39;change)
+    }
+  }
+
+  // handler
+  watch: {
+    obj: {
+       handler(new, old) {
+        console.log(new, &#39;change&#39;);
+      },
+    }
+  }
+</code></pre>
+<blockquote>
+<p>当<code>obj.a</code>的值改变，<code>watch</code> 并没有监听到变化。受现代 <code>JavaScript</code> 的限制，<code>Vue</code> 不能检测到对象属性的添加或删除。由于 <code>Vue</code> 会在实例初始化时对属性执行 <code>getter/setter</code> 转化过程，所有属性必须在 <code>data</code> 对象上存在， <code>Vue</code> 才能转换它，这就是响应式的远离。<br>默认情况下 <code>watch</code> 只监听 obj 这个属性引用的变化，而不能坚定到对象属性的改变，我们只有给<code>obj</code>重新整体赋值的时候它才会监听到</p>
+</blockquote>
+<ul>
+<li><code>deep</code> 深层遍历<blockquote>
+<p>监听器会一层层的往下遍历，给对象的所有属性都加上监听器，任何修改 <code>obj</code> 里面任何一个属性都会触发这个监听器里的 <code>handler</code>，性能开销太大。</p>
+</blockquote>
+</li>
+</ul>
+<pre><code class="language-js">watch: {
+  obj: {
+    handler(new, old) {
+      console.log(&#39;change&#39;);
+    },
+    deep: true // 深层遍历
+  }
+}
+</code></pre>
+<ul>
+<li>日程使用<blockquote>
+<p>只监听我们所需要</p>
+</blockquote>
+</li>
+</ul>
+<pre><code class="language-js">watch: {
+    &#39;obj.test&#39;(e) {
+      console.log(e, &#39;change)
+    }
+  }
+</code></pre>
+<ul>
+<li>immediate<br>在选项参数中指定 <code>immediate: true</code> 将立即以表达式的当前值触发回调：</li>
+</ul>
+<pre><code class="language-js">watch: {
+  &#39;obj.test&#39;: {
+    handler(new, old) {
+      console.log(new, &#39;change&#39;);
+    },
+    immediate: true, // 立即执行 obj.test 变化就执行 watch
+  }
+}
+</code></pre>
+<h2 id="vm-watch"><a href="#vm-watch" class="headerlink" title="vm.$watch"></a><code>vm.$watch</code></h2><p><code>vm.$watch</code> 返回一个取消观察函数，用来停止触发回调</p>
+<pre><code class="language-js">var unwatch = vm.$watch(&#39;a&#39;, cb)
+// 之后取消观察
+unwatch()
+</code></pre>
+<blockquote>
+<p>组件是经常要被销毁的，应该注销掉原来的 <code>watch</code> 的，否则可能会导致内置溢出。但是我们平时 <code>watch</code> 都是写在组件的选项中的，他会随着组件的销毁而销毁,不需要手动取消。</p>
+</blockquote>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#computed、methods-和-watch"><span class="toc-text">computed、methods 和 watch</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#watch"><span class="toc-text">watch</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#immediate-和-deep-属性"><span class="toc-text">immediate 和 deep 属性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vm-watch"><span class="toc-text">vm.$watch</span></a></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
+    </div>
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/Vue/2019-04-25-computed-methods和watch/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/前端/"><i class="fa fa-tags"></i>前端</a>
+    
+    <a href="/tags/Vue/"><i class="fa fa-tags"></i>Vue</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/2019-05-10-js类型/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2019-04-11全局挂载公用组件/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
+</div>
+
+</div>
+
+
+      <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
+        >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
+      > -->
+    </main>
+     <div class="site-footer-wrapper">
+  <footer class="site-footer">
+    
+    <!-- <div class="site-footer-col">
+      <h5 class="site-footer-title">博客推荐</h5>
+      
+      <span class="site-footer-item">
+        <a
+          href="https://godbmw.com/"
+          target="_blank"
+          >GodBMW</a
+        >
+      </span>
+      
+      <span class="site-footer-item">
+        <a
+          href="http://ruanyifeng.com/"
+          target="_blank"
+          >阮一峰的个人网站</a
+        >
+      </span>
+      
+    </div> -->
+    
+    <div class="site-footer-info">
+      <i class="fa fa-clock-o"></i> 本站已稳定运行<span id="site-time"></span>
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-paw"></i>
+      <span id="busuanzi_container_site_pv">您是本站第 <span id="busuanzi_value_site_pv"></span> 位访客</span>
+    </div>
+     
+    <div class="site-footer-info">
+      <i class="fa fa-at"></i> Email: wenquan_he@163.com
+    </div>
+    
+    <div class="site-footer-info">
+      <i class="fa fa-copyright"></i>
+      2019
+      <a href="https://github.com/dongyuanxin/theme-ad/" target="_blank">Theme-AD</a>. Created by <a href="https://godbmw.com/" target="_blank">GodBMW</a>.
+      All rights reserved.
+    </div>
+  </footer>
+  <script src="/js/prism/clipboard.js"></script>
+  <script src="/js/prism/prism.js" async></script>
+</div>
+
+    <div id="site-layer" style="display:none;">
+  <div class="site-layer-content">
+    <div class="site-layer-header">
+      <span class="site-layer-header-title" id="site-layer-title"></span>
+      <i class="fa fa-close" id="site-layer-close"></i>
+    </div>
+    <div class="site-layer-body" id="site-layer-container">
+      <div class="site-layer-input" id="site-layer-search" style="display: none;">
+        <input type="text">
+        <i class="fa fa-search"></i>
+      </div>
+      <div class="site-layer-reward" id="site-layer-reward" style="display: none;">
+        
+          <div>
+            <img src="/images/wechatme.png" alt="WeChat">
+            
+              <p>WeChat</p>
+            
+          </div>
+        
+          <div>
+            <img src="/images/alipay.jpg" alt="AliPay">
+            
+              <p>AliPay</p>
+            
+          </div>
+        
+      </div>
+      <div id="site-layer-welcome" style="display:none;"></div>
+    </div>
+  </div>
+</div> 
+
+<div class="bottom-bar">
+  <div class="bottom-bar-left">
+    <a href="/passages/2019-05-10-js类型/" data-enable="true">
+      <i class="fa fa-arrow-left"></i>
+    </a>
+    <a href="/passages/2019-04-11全局挂载公用组件/" data-enable="true">
+      <i class="fa fa-arrow-right"></i>
+    </a>
+  </div>
+  <div class="bottom-bar-right">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
+      <i class="fa fa-bars"></i>
+    </a>
+    
+    <a href="javascript:void(0);" id="site-toggle-share-btn">
+      <i class="fa fa-share-alt"></i>
+    </a>
+    <a href="javascript:void(0);" id="site-reward">
+      <i class="fa fa-thumbs-up"></i>
+    </a>
+    <a href="javascript:void(0);" id="back-top-btn">
+      <i class="fa fa-chevron-up"></i>
+    </a>
+  </div>
+</div>
+    <div id="share-btn">
+  
+  
+  
+  
+  
+</div> 
+<script async src="https://www.googletagmanager.com/gtag/js?id="></script>
+<script async>
+  window.dataLayer = window.dataLayer || []
+  function gtag() {
+    dataLayer.push(arguments)
+  }
+  gtag('js', new Date())
+
+  gtag('config', '')
+</script>
+
+
+<script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?a9bcabb3fd87f223761676411c07b800'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script>
+
+
+<script async>
+  ;(function() {
+    var bp = document.createElement('script')
+    var curProtocol = window.location.protocol.split(':')[0]
+    if (curProtocol === 'https') {
+      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+    } else {
+      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+    }
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(bp, s)
+  })()
+</script>
+ 
+<script async>
+  (function(){
+  var src = (document.location.protocol == "http:") ? "http://js.passport.qihucdn.com/11.0.1.js?":"https://jspassport.ssl.qhimg.com/11.0.1.js?";
+  document.write('<script src="' + src + '" id="sozz"><\/script>');
+  })();
+</script>
+
+ 
+  </body>
+</html>
