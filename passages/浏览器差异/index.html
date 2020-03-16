@@ -5,14 +5,12 @@
   <meta name="author" content="markey">
   
 
-  <title>归档: 2019/8 | markey的blog</title>
+  <title>浏览器兼容性解决方案 | markey的blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
-  <meta name="keywords" content="Hexo, Theme-AD, blog">
-   
-  <meta name="description" content="hewaller的blog">
+    
+  <meta name="description" content="遇到的一些浏览器兼容性问题：下载、maxlength、postMessage、滚动">
 
     
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
@@ -27,7 +25,7 @@
     welcome: {"enable":false,"interval":30},
     start_time: "2019-03-01",
     passwords: [],
-    is_post: false,
+    is_post: true,
     lock: false,
     author: "markey",
     share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
@@ -139,18 +137,128 @@
       src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
     ></script> -->
     <main>
-      <div class="timeline">
-  <h2 class="timeline-title">归档: 30篇</h2>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2020-03-16
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/浏览器/"><i class="fa fa-bookmark"></i>浏览器</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    浏览器兼容性解决方案
+  </h1>
   
-    
-      <h3 class="timeline-subtitle">2019</h3>
-    
-    <div class="timeline-item">
-      <time>2019-08-25</time>
-      <a target="_self" href="/passages/CSS/2019-08-25-常用的css/">常用的 css</a>
+  <article class="passage-article">
+    <h2 id="文件下载"><a href="#文件下载" class="headerlink" title="文件下载"></a>文件下载</h2><h3 id="blob-下载（edeg-不支持-a-标签下载）"><a href="#blob-下载（edeg-不支持-a-标签下载）" class="headerlink" title="blob 下载（edeg 不支持 a 标签下载）"></a>blob 下载（edeg 不支持 a 标签下载）</h3><pre><code class="language-js">downloadByBlob(objResponse) {
+    let arrRes = objResponse.data;
+    const objBlob = new Blob([arrRes], {
+      type: &quot;application/octet-binary&quot;
+    }); // 构造一个blob对象来处理数据
+    //读取文件名
+    if (!objResponse.headers[&quot;content-disposition&quot;]) {
+      let strResult = &quot;&quot;;
+      let objResult = new DataView(arrRes);
+      for (let intNum = 0; intNum &lt; objResult.byteLength; intNum++) {
+        strResult += String.fromCharCode(objResult.getUint8(intNum));
+      }
+      return strResult;
+    } else {
+      let strFileName =
+        decodeURI(objResponse.headers[&quot;content-disposition&quot;].split(&quot;;&quot;)[1].split(&quot;=&quot;)[1]) || &quot;&quot;;
+      // edeg 不支持a标签下载
+      if (&quot;msSaveOrOpenBlob&quot; in navigator) {
+        window.navigator.msSaveOrOpenBlob(objBlob, strFileName);
+        return;
+      }
+      // 对于&lt;a&gt;标签，只有 Firefox 和 Chrome（内核） 支持 download 属性
+      // IE10以上支持blob但是依然不支持download
+      if (&quot;download&quot; in document.createElement(&quot;a&quot;)) {
+        // 支持a标签download的浏览器
+        const objLink = document.createElement(&quot;a&quot;); // 创建a标签
+        objLink.download = strFileName; // a标签添加属性
+        objLink.style.display = &quot;none&quot;;
+        objLink.href = URL.createObjectURL(objBlob);
+        document.body.appendChild(objLink);
+        objLink.click(); // 执行下载
+        URL.revokeObjectURL(objLink.href); // 释放url
+        document.body.removeChild(objLink); // 释放标签
+      } else {
+        // 其他浏览器
+        navigator.msSaveBlob(objBlob, strFileName);
+      }
+      return &quot;&quot;;
+    }
+  }
+</code></pre>
+<h3 id="pdf-文件下载乱码"><a href="#pdf-文件下载乱码" class="headerlink" title="pdf 文件下载乱码"></a>pdf 文件下载乱码</h3><blockquote>
+<p>使用 <code>axios</code> 下载， 文件下载后内容乱码是由于没有设置 <code>responseType</code></p>
+</blockquote>
+<pre><code class="language-js">responseType：&#39;blob&#39;
+// 返回的数据直接是一个 blob 对象，构造 a 标签下载即可
+</code></pre>
+<h2 id="元素滚动"><a href="#元素滚动" class="headerlink" title="元素滚动"></a>元素滚动</h2><h2 id="input-的-maxlength"><a href="#input-的-maxlength" class="headerlink" title="input 的 maxlength"></a>input 的 maxlength</h2><ul>
+<li><code>maxlength</code> 设置为 0， 在 IE 和其他浏览器中均不可输入</li>
+<li><code>maxlength</code> 设置为负数（-1）， 在 IE 中不可输入，Chrome 中可正常输入</li>
+</ul>
+<h2 id="使用内核是-IE-还是谷歌内核"><a href="#使用内核是-IE-还是谷歌内核" class="headerlink" title="使用内核是 IE 还是谷歌内核"></a>使用内核是 IE 还是谷歌内核</h2><p>搜狗浏览器：</p>
+<ul>
+<li>使用域名访问：Chrome 内核、支持 <code>postMessage</code></li>
+<li>使用 ip 访问：IE 内核、不支持 <code>postMessage</code></li>
+</ul>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#文件下载"><span class="toc-text">文件下载</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#blob-下载（edeg-不支持-a-标签下载）"><span class="toc-text">blob 下载（edeg 不支持 a 标签下载）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#pdf-文件下载乱码"><span class="toc-text">pdf 文件下载乱码</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#元素滚动"><span class="toc-text">元素滚动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#input-的-maxlength"><span class="toc-text">input 的 maxlength</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#使用内核是-IE-还是谷歌内核"><span class="toc-text">使用内核是 IE 还是谷歌内核</span></a></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
     </div>
-  
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/浏览器差异/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/前端/"><i class="fa fa-tags"></i>前端</a>
+    
+    <a href="/tags/浏览器/"><i class="fa fa-tags"></i>浏览器</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="javascript:void(0);" data-enable="false">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/utils/常用的工具方法/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
 </div>
+
+</div>
+
+
       <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
         >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
       > -->
@@ -241,12 +349,12 @@
     <a href="javascript:void(0);" data-enable="false">
       <i class="fa fa-arrow-left"></i>
     </a>
-    <a href="javascript:void(0);" data-enable="false">
+    <a href="/passages/utils/常用的工具方法/" data-enable="true">
       <i class="fa fa-arrow-right"></i>
     </a>
   </div>
   <div class="bottom-bar-right">
-    <a href="javascript:void(0);" data-enable="false" id="site-toc-show-btn">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
       <i class="fa fa-bars"></i>
     </a>
     

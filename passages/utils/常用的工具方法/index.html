@@ -5,14 +5,12 @@
   <meta name="author" content="markey">
   
 
-  <title>归档: 2019/8 | markey的blog</title>
+  <title>常用的工具类方法 | markey的blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
-  <meta name="keywords" content="Hexo, Theme-AD, blog">
-   
-  <meta name="description" content="hewaller的blog">
+    
+  <meta name="description" content="常用的工具类方法: 防抖和节流、元素滚动、数字格式化处理、日期处理和加减">
 
     
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
@@ -27,7 +25,7 @@
     welcome: {"enable":false,"interval":30},
     start_time: "2019-03-01",
     passwords: [],
-    is_post: false,
+    is_post: true,
     lock: false,
     author: "markey",
     share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
@@ -139,18 +137,110 @@
       src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
     ></script> -->
     <main>
-      <div class="timeline">
-  <h2 class="timeline-title">归档: 30篇</h2>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2020-03-16
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/utils/"><i class="fa fa-bookmark"></i>utils</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    常用的工具类方法
+  </h1>
   
-    
-      <h3 class="timeline-subtitle">2019</h3>
-    
-    <div class="timeline-item">
-      <time>2019-08-25</time>
-      <a target="_self" href="/passages/CSS/2019-08-25-常用的css/">常用的 css</a>
+  <article class="passage-article">
+    <h2 id="日期类"><a href="#日期类" class="headerlink" title="日期类"></a>日期类</h2><h3 id="日期加减"><a href="#日期加减" class="headerlink" title="日期加减"></a>日期加减</h3><pre><code class="language-js">function dateAddOrMinus(date, strInterval, intNum) {
+  let newDate = date
+  switch (strInterval) {
+    case &#39;Y&#39;: //4位年
+    case &#39;y&#39;: //2位年
+      newDate.setFullYear(date.getFullYear() + intNum)
+      if (newDate.getMonth() !== date.getMonth()) {
+        newDate.setDate(0)
+      }
+      return newDate
+    case &#39;M&#39;: //2位月，不足2位前导0
+    case &#39;m&#39;: //月，不带前导0
+      newDate.setMonth(date.getMonth() + intNum)
+      if (newDate.getDate() !== date.getDate()) {
+        newDate.setDate(0)
+      }
+      return newDate
+    case &#39;D&#39;: //2位日，不足2位前导0
+    case &#39;d&#39;: //日，不带前导0
+      newDate.setDate(date.getDate() + intNum)
+      return newDate
+    case &#39;H&#39;: //2位时，不足2位前导0
+    case &#39;h&#39;: //时，不带前导0
+      newDate.setHours(date.getHours() + intNum)
+      return newDate
+    case &#39;mm&#39;: //2位分，不足2位前导0
+      newDate.setMinutes(date.getMinutes() + intNum)
+      return newDate
+    case &#39;s&#39;: //2位秒，不足2位前导0
+      newDate.setSeconds(date.getSeconds() + intNum)
+      return newDate
+    default:
+      return null
+  }
+}
+
+console.log(dateAddOrMinus(new Date(&#39;2019-04-28&#39;), &#39;m&#39;, -2))
+</code></pre>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#日期类"><span class="toc-text">日期类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#日期加减"><span class="toc-text">日期加减</span></a></li></ol></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
     </div>
-  
+    
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/utils/常用的工具方法/</a>
+    </div>
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/JavaScript/"><i class="fa fa-tags"></i>JavaScript</a>
+    
+    <a href="/tags/utils/"><i class="fa fa-tags"></i>utils</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="/passages/浏览器差异/" data-enable="true">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2019-12-12git/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
 </div>
+
+</div>
+
+
       <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
         >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
       > -->
@@ -238,15 +328,15 @@
 
 <div class="bottom-bar">
   <div class="bottom-bar-left">
-    <a href="javascript:void(0);" data-enable="false">
+    <a href="/passages/浏览器差异/" data-enable="true">
       <i class="fa fa-arrow-left"></i>
     </a>
-    <a href="javascript:void(0);" data-enable="false">
+    <a href="/passages/2019-12-12git/" data-enable="true">
       <i class="fa fa-arrow-right"></i>
     </a>
   </div>
   <div class="bottom-bar-right">
-    <a href="javascript:void(0);" data-enable="false" id="site-toc-show-btn">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
       <i class="fa fa-bars"></i>
     </a>
     
