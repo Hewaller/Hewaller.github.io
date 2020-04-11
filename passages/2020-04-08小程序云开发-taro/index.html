@@ -5,14 +5,12 @@
   <meta name="author" content="markey">
   
 
-  <title>归档: 2019/1 | markey的blog</title>
+  <title>小程序云开发 —— taro | markey的blog</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
-  <meta name="keywords" content="Hexo, Theme-AD, blog">
-   
-  <meta name="description" content="hewaller的blog">
+    
+  <meta name="description" content="小程序云开发探索笔记">
 
     
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML" async></script>
@@ -27,7 +25,7 @@
     welcome: {"enable":false,"interval":30},
     start_time: "2019-03-01",
     passwords: [],
-    is_post: false,
+    is_post: true,
     lock: false,
     author: "markey",
     share: {"twitter":false,"facebook":false,"weibo":false,"qq":false,"wechat":false},
@@ -139,24 +137,144 @@
       src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"
     ></script> -->
     <main>
-      <div class="timeline">
-  <h2 class="timeline-title">归档: 31篇</h2>
+      
+  <div class="passage">
+  <div class="passage-meta">
+    <span>
+      <i class="fa fa-calendar"></i>2020-04-08
+    </span>
+    
+    <span>
+      |
+      <a href="/categories/miniApp/"><i class="fa fa-bookmark"></i>miniApp</a>
+    </span>
+     
+    <span> | <i class="fa fa-unlock-alt"></i>UNLOCK </span>
+    
+  </div>
+  <h1 class="passage-title">
+    小程序云开发 —— taro
+  </h1>
   
-    
-      <h3 class="timeline-subtitle">2019</h3>
-    
-    <div class="timeline-item">
-      <time>2019-01-02</time>
-      <a target="_self" href="/passages/2019-01-03-阿里软电话SDK前端/">阿里云云呼叫软电话SDK前端接入</a>
+  <article class="passage-article">
+    <h3 id="小程序模版"><a href="#小程序模版" class="headerlink" title="小程序模版"></a>小程序模版</h3><p>区别于普通的小程序：</p>
+<ul>
+<li>目录结构 <a href="https://nervjs.github.io/taro/docs/wxcloud.html" target="_blank" rel="noopener">官网模版</a></li>
+<li>使用微信开发者工具调试项目，请将项目 <strong>整个文件夹</strong> 作为运行目录。</li>
+<li><code>project.config.json</code> 中 <code>miniprogramRoot</code> 的启动目录设置为 <code>client/dist/</code></li>
+<li><code>cloudfunctionRoot</code> 设置目录为 <code>cloud/functions/</code></li>
+<li>入口文件<code>src/app.jsx</code> 添加</li>
+</ul>
+<pre><code class="language-js">   componentDidMount() {
+       wx.cloud.init({
+         env: &quot;环境ID&quot;
+       });
+   }
+</code></pre>
+<h3 id="数据库"><a href="#数据库" class="headerlink" title="数据库"></a>数据库</h3><p>云开发提供了一个 JSON 数据库,一个数据库可以有多个集合（相当于关系型数据中的表），集合可看做一个 JSON 数组，数组中的每个对象就是一条记录，记录的格式是 JSON 对象。</p>
+<p>建立数据库步骤：</p>
+<ul>
+<li>小程序内点击云开发 - 数据库</li>
+<li>新建一个集合（表）</li>
+<li>对应集合中添加需要的字段，JSON 格式。</li>
+<li>索引字段默认为 <code>_id</code>, 使用系统自动生成的 id</li>
+</ul>
+<h3 id="云函数的开发和调试"><a href="#云函数的开发和调试" class="headerlink" title="云函数的开发和调试"></a>云函数的开发和调试</h3><ol>
+<li>建立好云函数文件夹后，打开开发者开发工具，右键云函数文件夹，新建 Node.js 云函数。会自动生成一个文件夹，并且同时部署到远程</li>
+</ol>
+<p><img src="https://pic.downk.cc/item/5e8ae285504f4bcb04f75c07.jpg" alt="image"></p>
+<blockquote>
+<p>文件结构如下</p>
+</blockquote>
+<pre><code class="language-js">├── sum                         云函数名
+│   ├── config.json             配置文件
+│   ├── package.json            依赖包
+│   ├── index.js                云函数主体
+
+</code></pre>
+<ol start="2">
+<li>修改新建的云函数<blockquote>
+<p>一开始发现怎么改 <code>index.js</code> 都不起作用，原来是修改后远程的云函数并未自动更新，解决方案：</p>
+</blockquote>
+</li>
+</ol>
+<ul>
+<li>修改后直接上传和部署：每次修改都得重新部署，麻烦</li>
+<li>云函数本地调试 <a href="https://developers.weixin.qq.com/miniprogram/dev/wxcloud/guide/functions/local-debug.html" target="_blank" rel="noopener">官网文档</a></li>
+</ul>
+<p><img src="https://pic.downk.cc/item/5e8ae56b504f4bcb04f996cd.jpg" alt="image"></p>
+<blockquote>
+<p>本地调试云函数首先得安装依赖 <code>npm i</code>，同时监听文件的更改，部署到云端不上传 node_modules</p>
+</blockquote>
+<h3 id="云函数的注意事项和总结"><a href="#云函数的注意事项和总结" class="headerlink" title="云函数的注意事项和总结"></a>云函数的注意事项和总结</h3><pre><code class="language-js">// 云函数入口文件
+const cloud = require(&#39;wx-server-sdk&#39;)
+cloud.init()
+const db = cloud.database()
+const _ = db.command
+
+exports.main = async (event, context) =&gt; {
+  try {
+    return await db
+      .collection(&#39;todos&#39;)
+      .where({
+        _id: _.in(event.ids),
+      })
+      .remove()
+  } catch (e) {
+    console.error(e)
+  }
+}
+</code></pre>
+<ul>
+<li>异步问题：可以使用 generator 语法</li>
+<li>批量处理多条数据可以使用 <code>where</code> 语句，搭配 <code>command</code> 中的方法</li>
+<li><code>node_modules</code>： 本地调试和部署到云端，前者需要，后者不需要</li>
+<li>调用云函数： <code>wx.cloud.callFunction</code> ，要根据返回的 <code>result</code> 数据判断是是否执行成功，云函数执行失败，返回的数据可能不包含 <code>result</code> 字段或者为 <code>null</code></li>
+</ul>
+  </article>
+  <aside class="table-content" id="site-toc">
+  <div class="table-content-title">
+    <i class="fa fa-arrow-right fa-lg" id="site-toc-hide-btn"></i>
+    <span>目录</span>
+  </div>
+  <div class="table-content-main">
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#小程序模版"><span class="toc-text">小程序模版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库"><span class="toc-text">数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#云函数的开发和调试"><span class="toc-text">云函数的开发和调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#云函数的注意事项和总结"><span class="toc-text">云函数的注意事项和总结</span></a></li></ol>
+  </div>
+</aside> 
+  <aside class="passage-copyright">
+    <div>
+      本文作者: 何文全
     </div>
-  
     
-    <div class="timeline-item">
-      <time>2019-01-02</time>
-      <a target="_self" href="/passages/CSS/2019-01-02-常见的css布局/">常见的css布局</a>
+    <div>
+      原文链接:
+      <a href target="_blank">https://hewaller.github.io/passages/2020-04-08小程序云开发-taro/</a>
     </div>
-  
+    
+    <div>
+      著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+    </div>
+  </aside>
+   
+  <div class="passage-tags">
+    
+    <a href="/tags/miniApp/"><i class="fa fa-tags"></i>miniApp</a>
+    
+  </div>
+   
+
+<div class="footer-bar">
+  <a href="javascript:void(0);" data-enable="false">
+    <i class="fa fa-arrow-left"></i> previous
+  </a>
+  <a href="/passages/2020-03-16浏览器差异/" data-enable="true">
+    next <i class="fa fa-arrow-right"></i>
+  </a>
 </div>
+
+</div>
+
+
       <!-- <span id="busuanzi_container_site_pv" style="opacity: 0"
         >本站总访问量 <span id="busuanzi_value_site_pv"></span>次</span
       > -->
@@ -247,12 +365,12 @@
     <a href="javascript:void(0);" data-enable="false">
       <i class="fa fa-arrow-left"></i>
     </a>
-    <a href="javascript:void(0);" data-enable="false">
+    <a href="/passages/2020-03-16浏览器差异/" data-enable="true">
       <i class="fa fa-arrow-right"></i>
     </a>
   </div>
   <div class="bottom-bar-right">
-    <a href="javascript:void(0);" data-enable="false" id="site-toc-show-btn">
+    <a href="javascript:void(0);" data-enable="true" id="site-toc-show-btn">
       <i class="fa fa-bars"></i>
     </a>
     
