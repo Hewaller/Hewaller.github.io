@@ -231,6 +231,271 @@ exports.main = async (event, context) =&gt; {
 <li><code>node_modules</code>： 本地调试和部署到云端，前者需要，后者不需要</li>
 <li>调用云函数： <code>wx.cloud.callFunction</code> ，要根据返回的 <code>result</code> 数据判断是是否执行成功，云函数执行失败，返回的数据可能不包含 <code>result</code> 字段或者为 <code>null</code></li>
 </ul>
+<h3 id="具体实例"><a href="#具体实例" class="headerlink" title="具体实例"></a>具体实例</h3><h3 id="获取-oppenid-和-unionid"><a href="#获取-oppenid-和-unionid" class="headerlink" title="获取 oppenid 和 unionid"></a>获取 oppenid 和 unionid</h3><ul>
+<li>云函数</li>
+</ul>
+<pre><code class="language-js">const cloud = require(&#39;wx-server-sdk&#39;)
+cloud.init()
+// 云函数入口函数
+exports.main = async (event, context) =&gt; {
+  const wxContext = cloud.getWXContext()
+  return {
+    event,
+    openid: wxContext.OPENID,
+    appid: wxContext.APPID,
+    unionid: wxContext.UNIONID,
+  }
+}
+</code></pre>
+<h4 id="获取用户信息"><a href="#获取用户信息" class="headerlink" title="获取用户信息"></a>获取用户信息</h4><ul>
+<li>云函数</li>
+</ul>
+<pre><code class="language-js">const cloud = require(&#39;wx-server-sdk&#39;)
+cloud.init({})
+
+exports.main = async (event, context) =&gt; {
+  const res = await cloud.getOpenData({
+    list: [event.cloudID], // CloudID 字符串列表
+  })
+  return res.list
+}
+</code></pre>
+<ul>
+<li>小程序端</li>
+</ul>
+<pre><code class="language-html">&lt;button
+  type=&quot;primary&quot;
+  openType=&quot;getUserInfo&quot;
+  onGetUserInfo=&quot;{this.getUserInfo}&quot;
+  className=&quot;marginTop&quot;
+&gt;
+  获取微信信息
+&lt;/button&gt;
+</code></pre>
+<pre><code class="language-js">getUserInfo = function (e) {
+  wx.cloud.callFunction({
+    name: &#39;getUserInfo&#39;,
+    data: {
+      cloudID: e.detail.cloudID,
+    },
+    success: (res) =&gt; {
+      console.log(res)
+    },
+  })
+}
+</code></pre>
+<h4 id="增"><a href="#增" class="headerlink" title="增"></a>增</h4><ul>
+<li>云函数</li>
+</ul>
+<pre><code class="language-js">// 云函数入口文件
+const cloud = require(&#39;wx-server-sdk&#39;)
+cloud.init()
+const db = cloud.database()
+exports.main = async (event, context) =&gt; {
+  const {
+    description = &#39;&#39;,
+    done = &#39;&#39;,
+    date = new Date(),
+    tags = [],
+    title = &#39;&#39;,
+  } = event
+  try {
+    // todos 数据库中的表名
+    const res = await db.collection(&#39;todos&#39;).add({
+      // data 字段表示需新增的 JSON 数据
+      data: {
+        description,
+        done,
+        date,
+        tags,
+        title,
+      },
+    })
+    return res
+  } catch (e) {
+    console.error(e)
+  }
+}
+</code></pre>
+<ul>
+<li>小程序</li>
+</ul>
+<pre><code class="language-js">wx.cloud
+  .callFunction({
+    name: &#39;addTodo&#39;,
+    data: {
+      description,
+      done,
+      date,
+      tags,
+      title,
+    },
+  })
+  .then((res) =&gt; {
+    if (res &amp;&amp; res.result &amp;&amp; res.result._id) {
+      console.log(&#39;success&#39;)
+    } else {
+      console.log(&#39;添加失败&#39;)
+    }
+  })
+</code></pre>
+<h4 id="删"><a href="#删" class="headerlink" title="删"></a>删</h4><ul>
+<li>云函数</li>
+</ul>
+<pre><code class="language-js">// 云函数入口文件
+const cloud = require(&#39;wx-server-sdk&#39;)
+cloud.init()
+const db = cloud.database()
+const _ = db.command
+exports.main = async (event, context) =&gt; {
+  try {
+    // where 删除所有符合条件的id
+    return await db
+      .collection(&#39;todos&#39;)
+      .where({
+        _id: _.in(event.ids),
+      })
+      .remove()
+  } catch (e) {
+    console.error(e)
+  }
+}
+</code></pre>
+<ul>
+<li>小程序端调用</li>
+</ul>
+<pre><code class="language-js">wx.cloud
+  .callFunction({
+    name: &#39;delTodo&#39;,
+    data: { ids: this.state.checkedList },
+  })
+  .then((res) =&gt; {
+    if (res &amp;&amp; res.result &amp;&amp; res.result.stats &amp;&amp; res.result.stats.removed &gt; 0) {
+      console.log(&#39;delete success&#39;)
+    }
+  })
+</code></pre>
+<h4 id="改"><a href="#改" class="headerlink" title="改"></a>改</h4><ul>
+<li>云函数</li>
+</ul>
+<pre><code class="language-js">// 云函数入口函数
+exports.main = async (event, context) =&gt; {
+  try {
+    const {
+      description = &#39;&#39;,
+      done = &#39;&#39;,
+      date = new Date(),
+      tags = [],
+      title = &#39;&#39;,
+      id = &#39;&#39;,
+    } = event
+    // 根据 id 去修改数据
+    const res = await db.collection(&#39;todos&#39;).doc(id).update({
+      data: {
+        description,
+        done,
+        date,
+        tags,
+        title,
+      },
+    })
+    return res
+  } catch (error) {
+    console.log(error)
+  }
+}
+</code></pre>
+<ul>
+<li>小程序端<br>类似于增，需要多传一个参数 id</li>
+</ul>
+<h4 id="查"><a href="#查" class="headerlink" title="查"></a>查</h4><ul>
+<li>云函数<br>云函数每次限制查出 100 条数据，要查出所有的数据，需要循环的去查</li>
+</ul>
+<pre><code class="language-js">const cloud = require(&#39;wx-server-sdk&#39;)
+cloud.init()
+const db = cloud.database()
+const MAX_LIMIT = 100
+exports.main = async (event, context) =&gt; {
+  const _id = event.id
+  if (_id) {
+    // 单条查询
+    const res = await db
+      .collection(&#39;todos&#39;)
+      .where({
+        _id,
+      })
+      .get()
+    return res
+  } else {
+    // 先取出集合记录总数
+    const countResult = await db.collection(&#39;todos&#39;).count()
+    const total = countResult.total
+    // 计算需分几次取
+    const batchTimes = Math.ceil(total / 100)
+    // 承载所有读操作的 promise 的数组
+    const tasks = []
+    for (let i = 0; i &lt; batchTimes; i++) {
+      const promise = db
+        .collection(&#39;todos&#39;)
+        .skip(i * MAX_LIMIT)
+        .limit(MAX_LIMIT)
+        .get()
+      tasks.push(promise)
+    }
+    // 等待所有
+    return (await Promise.all(tasks)).reduce((acc, cur) =&gt; ({
+      data: acc.data.concat(cur.data),
+      errMsg: acc.errMsg,
+    }))
+  }
+}
+</code></pre>
+<h3 id="上传文件-图片"><a href="#上传文件-图片" class="headerlink" title="上传文件 - 图片"></a>上传文件 - 图片</h3><ul>
+<li>云函数</li>
+</ul>
+<pre><code class="language-js">const cloud = require(&#39;wx-server-sdk&#39;)
+const fs = require(&#39;fs&#39;)
+cloud.init()
+exports.main = async (event, context) =&gt; {
+  const fileStream = fs.createReadStream(event.filePath)
+  return await cloud.uploadFile({
+    cloudPath: event.cloudPath,
+    fileContent: fileStream,
+  })
+}
+</code></pre>
+<ul>
+<li>小程序端</li>
+</ul>
+<pre><code class="language-js">wx.chooseImage({
+  count: 2,
+  sizeType: [&#39;original&#39;, &#39;compressed&#39;],
+  sourceType: [&#39;album&#39;, &#39;camera&#39;],
+  success: function (res) {
+    const filePath = res.tempFilePaths[0]
+    // 上传图片
+    var timestamp = Date.parse(new Date())
+    // test_img/ 文件夹路径
+    const cloudPath = &#39;test_img/&#39; + timestamp + filePath.match(/\.[^.]+?$/)[0]
+    wx.cloud.uploadFile({
+      cloudPath,
+      filePath,
+      success: (data) =&gt; {
+        console.log(data)
+      },
+      fail: () =&gt; {
+        console.log(&#39;faile&#39;)
+      },
+      complete: () =&gt; {
+        console.log(&#39;complete&#39;)
+      },
+    })
+  },
+  fail: (e) =&gt; {
+    console.error(e)
+  },
+})
+</code></pre>
   </article>
   <aside class="table-content" id="site-toc">
   <div class="table-content-title">
@@ -238,7 +503,7 @@ exports.main = async (event, context) =&gt; {
     <span>目录</span>
   </div>
   <div class="table-content-main">
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#小程序模版"><span class="toc-text">小程序模版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库"><span class="toc-text">数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#云函数的开发和调试"><span class="toc-text">云函数的开发和调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#云函数的注意事项和总结"><span class="toc-text">云函数的注意事项和总结</span></a></li></ol>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#小程序模版"><span class="toc-text">小程序模版</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#数据库"><span class="toc-text">数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#云函数的开发和调试"><span class="toc-text">云函数的开发和调试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#云函数的注意事项和总结"><span class="toc-text">云函数的注意事项和总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#具体实例"><span class="toc-text">具体实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#获取-oppenid-和-unionid"><span class="toc-text">获取 oppenid 和 unionid</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#获取用户信息"><span class="toc-text">获取用户信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#增"><span class="toc-text">增</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#删"><span class="toc-text">删</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#改"><span class="toc-text">改</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#查"><span class="toc-text">查</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#上传文件-图片"><span class="toc-text">上传文件 - 图片</span></a></li></ol>
   </div>
 </aside> 
   <aside class="passage-copyright">
